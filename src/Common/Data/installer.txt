@@ -1,0 +1,381 @@
+library(netzhaut)
+library(nhloader)
+library(nhcore)
+library(nhwsi)
+library(nhtty)
+library(nhnetwork)
+library(nhecmascript)
+library(nhhtml)
+library(nhwebidl)
+library(nhencoding)
+library(nhdom)
+library(nhgfx)
+library(nhcss)
+
+compileArguments(nhgfx,"-I/usr/include/freetype2 -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface")
+compileArguments(nhcss,"-DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface")
+compileArguments(nhdom,"-Wall -Wextra")
+compileArguments(nhexternal,"-I/usr/include/freetype2")
+
+linkArguments(netzhaut,"-ldl")
+linkArguments(nhloader,"-ldl")
+linkArguments(nhcore,"-lm -ldl")
+linkArguments(nhwsi,"-lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
+linkArguments(nhtty,"-lutil")
+linkArguments(nhnetwork,"-lssl")
+linkArguments(nhgfx,"-lX11 -lfreetype -L${PROJECT_DIRECTORY}/external/DOWNLOADS/volk-master/ -l:libvolk.a")
+linkArguments(nhexternal,"-lfreetype")
+
+source(
+    "netzhaut/netzhaut.c"
+    "netzhaut/netzhauttty.c"
+    "netzhaut/netzhautwsi.c"
+    "netzhaut/netzhautgfx.c"
+    "netzhaut/netzhauthtml.c"
+    "nhloader/Loader.c"
+    "nhloader/Library.c"
+    "nhloader/Reload.c"
+    "nhloader/Repository.c"
+    "nhloader/Common/Result.c"
+    "nhloader/Common/Log.c"
+    "nhcore/System.c"
+    "nhcore/Window.c"
+    "nhcore/HashMap.c"
+    "nhcore/Sync.c"
+    "nhcore/Tab.c"
+    "nhcore/Time.c"
+    "nhcore/Config.c"
+    "nhcore/String.c"
+    "nhcore/Thread.c"
+    "nhcore/Channel.c"
+    "nhcore/Logger.c"
+    "nhcore/Memory.c"
+    "nhcore/Unicode.c"
+    "nhcore/UnicodeLookup.c"
+    "nhcore/RingBuffer.c"
+    "nhcore/LinkedList.c"
+    "nhcore/Math.c"
+    "nhcore/File.c"
+    "nhcore/URI.c"
+    "nhcore/MediaType.c"
+    "nhcore/List.c"
+    "nhcore/Array.c"
+    "nhcore/Process.c"
+    "nhcore/Stack.c"
+    "nhcore/BigInt.c"
+    "nhcore/ArrayList.c"
+    "nhcore/Common/Initialize.c"
+    "nhcore/Common/Terminate.c"
+    "nhcore/Common/Result.c"
+    "nhcore/Common/IndexMap.c"
+    "nhcore/Common/Log.c"
+    "nhwsi/Window.c"
+    "nhwsi/Mouse.c"
+    "nhwsi/Keyboard.c"
+    "nhwsi/Win32.c"
+    "nhwsi/X11.c"
+    "nhwsi/Common/Log.c"
+    "nhwsi/Common/Result.c"
+    "nhwsi/Common/Initialize.c"
+    "nhhtml/Parser/Parser.c"
+    "nhhtml/Parser/NamedCharacterReferences.c"
+    "nhhtml/Parser/Elements.c"
+    "nhhtml/Parser/Tokenizer.c"
+    "nhhtml/Parser/TreeConstruction.c"
+    "nhhtml/Parser/TreeConstructionHelper.c"
+    "nhhtml/Objects/Document.c"
+    "nhhtml/Common/Log.c"
+    "nhhtml/Common/Result.c"
+    "nhhtml/Common/IndexMap.c"
+    "nhhtml/Common/Terminate.c"
+    "nhhtml/Common/Initialize.c"
+    "nhhtml/Main/DocumentContext.c"
+    "nhdom/NodeList.c"
+    "nhdom/EventTarget.c"
+    "nhdom/Node.c"
+    "nhdom/Document.c"
+    "nhdom/DocumentType.c"
+    "nhdom/Comment.c"
+    "nhdom/Element.c"
+    "nhdom/NamedNodeMap.c"
+    "nhdom/CharacterData.c"
+    "nhdom/Text.c"
+    "nhdom/Attr.c"
+    "nhdom/Common/Result.c"
+    "nhdom/Common/Initialize.c"
+    "nhdom/Common/Terminate.c"
+    "nhtty/Terminal.c"
+    "nhtty/Row.c"
+    "nhtty/Draw.c"
+    "nhtty/TreeListing.c"
+    "nhtty/Program.c"
+    "nhtty/Output.c"
+    "nhtty/Tile.c"
+    "nhtty/Tab.c"
+    "nhtty/Shell.c"
+    "nhtty/Editor.c"
+    "nhtty/FileEditor.c"
+    "nhtty/TextFile.c"
+    "nhtty/SyntaxHighlights.c"
+    "nhtty/Messages.c"
+    "nhtty/Console.c"
+    "nhtty/Idle.c"
+    "nhtty/Logger.c"
+    "nhtty/Common/Result.c"
+    "nhnetwork/URL.c"
+    "nhnetwork/Socket.c"
+    "nhnetwork/HTTP.c"
+    "nhnetwork/SSL.c"
+    "nhnetwork/Network.c"
+    "nhnetwork/Common/Log.c"
+    "nhnetwork/Common/Result.c"
+    "nhwebidl/Runtime/Tokenizer.c"
+    "nhwebidl/Runtime/Parser.c"
+    "nhwebidl/Runtime/Builtin.c"
+    "nhwebidl/Runtime/Definitions.c"
+    "nhwebidl/Runtime/Runtime.c"
+    "nhwebidl/Runtime/Object.c"
+    "nhwebidl/Runtime/Type.c"
+    "nhwebidl/Runtime/String.c"
+    "nhwebidl/Common/Log.c"
+    "nhwebidl/Common/Initialize.c"
+    "nhwebidl/Common/Terminate.c"
+    "nhwebidl/Common/IndexMap.c"
+    "nhwebidl/Common/Result.c"
+    "nhecmascript/Engine/Lexer.c"
+    "nhecmascript/Engine/Agent.c"
+    "nhecmascript/Engine/Script.c"
+    "nhecmascript/Engine/Parser.c"
+    "nhecmascript/Engine/Realm.c"
+    "nhecmascript/Engine/InternalSlots.c"
+    "nhecmascript/Engine/ObjectType.c"
+    "nhecmascript/Engine/Type.c"
+    "nhecmascript/Engine/BuiltinFunctionObject.c"
+    "nhecmascript/Engine/Completion.c"
+    "nhecmascript/Engine/Properties.c"
+    "nhecmascript/Engine/Environment.c"
+    "nhecmascript/Engine/OrdinaryFunctionObject.c"
+    "nhecmascript/Engine/Evaluation.c"
+    "nhecmascript/Engine/ExecutionContext.c"
+    "nhecmascript/Engine/CompletionOrReference.c"
+    "nhecmascript/Engine/Reference.c"
+    "nhecmascript/Engine/TestAndCompare.c"
+    "nhecmascript/Engine/PropertyDescriptor.c"
+    "nhecmascript/Engine/Instantiation.c"
+    "nhecmascript/Engine/OrdinaryObject.c"
+    "nhecmascript/StaticSemantics/Misc.c"
+    "nhecmascript/StaticSemantics/DeclaredNames.c"
+    "nhecmascript/StaticSemantics/BoundNames.c"
+    "nhecmascript/StaticSemantics/ScopedDeclarations.c"
+    "nhecmascript/StaticSemantics/ParameterLists.c"
+    "nhecmascript/Intrinsics/GlobalObject.c"
+    "nhecmascript/Intrinsics/Object.c"
+    "nhecmascript/Intrinsics/Function.c"
+    "nhecmascript/Common/Initialize.c"
+    "nhecmascript/Common/Terminate.c"
+    "nhecmascript/Common/Log.c"
+    "nhecmascript/Common/IndexMap.c"
+    "nhecmascript/Common/Result.c"
+    "nhencoding/Common/Result.c"
+    "nhencoding/Common/IndexMap.c"
+    "nhencoding/Common/Initialize.c"
+    "nhencoding/Common/Terminate.c"
+    "nhencoding/Base/Encodings.c"
+    "nhencoding/Encodings/UTF8.c"
+    "nhgfx/Common/Result.c"
+    "nhgfx/Common/Initialize.c"
+    "nhgfx/Common/Log.c"
+    "nhgfx/Vulkan/Host.c"
+    "nhgfx/Vulkan/GPU.c"
+    "nhgfx/Vulkan/Driver.c"
+    "nhgfx/Vulkan/Helper.c"
+    "nhgfx/Vulkan/Texture.c"
+    "nhgfx/Vulkan/Render.c"
+    "nhgfx/Vulkan/Surface.c"
+    "nhgfx/Vulkan/Vulkan.c"
+    "nhgfx/Vulkan/Viewport.c"
+    "nhgfx/Base/Font.c"
+    "nhgfx/Base/Texture.c"
+    "nhgfx/Base/Surface.c"
+    "nhgfx/Base/Viewport.c"
+    "nhcss/Common/Result.c"
+    "nhcss/Common/Log.c"
+    "nhcss/Common/Initialize.c"
+    "nhcss/Common/IndexMap.c"
+    "nhcss/Parser/Tokenizer.c"
+    "nhcss/Parser/Parser.c"
+    "nhcss/Parser/SelectorParser.c"
+    "nhcss/Parser/Match.c"
+    "nhcss/Properties/Values.c"
+    "nhcss/Properties/Properties.c"
+    "nhcss/Properties/Compute.c"
+    "nhcss/Properties/Color.c"
+    "nhcss/Properties/Filter.c"
+    "nhcss/Properties/Cascade.c"
+    "nhcss/Renderer/Renderer.c"
+    "nhcss/Renderer/BoxTriangulation.c"
+    "nhcss/Renderer/Vertices.c"
+    "nhcss/Renderer/SourceTree.c"
+    "nhcss/Renderer/BoxTree.c"
+    "nhcss/Layout/Box.c"
+    "nhcss/Layout/LayoutValues.c"
+    "nhcss/Layout/Block.c"
+    "nhcss/Layout/Inline.c"
+    "nhcss/Layout/Depth.c"
+    "nhcss/Vulkan/Pipeline.c"
+    "nhcss/Vulkan/Buffer.c"
+    "nhcss/Vulkan/Uniform.c"
+    "nhcss/Vulkan/Descriptor.c"
+    "nhcss/Vulkan/Record.c"
+    "nhcss/Vulkan/Data.c"
+    "nhcss/Vulkan/Text.c"
+)
+
+externalSource (
+    "freetype-gl/utf8-utils.c"
+    "freetype-gl/vector.c"
+    "freetype-gl/texture-atlas.c"
+    "freetype-gl/texture-font.c"
+    "freetype-gl/distance-field.c"
+    "freetype-gl/edtaa3func.c"
+    "freetype-gl/platform.c"
+    "c_hashmap/hashmap.c"
+)
+
+--downloadglsl "[dev] download glslang"
+{
+    mkdir("external/DOWNLOADS")
+    chdir("external/DOWNLOADS")
+    system("wget -O tmp.zip https://github.com/KhronosGroup/glslang/archive/master.zip")
+    system("unzip -o tmp.zip")
+    system("rm tmp.zip")
+    chdir("external/DOWNLOADS/glslang-master")
+    system("cmake . && make")
+}
+
+--compileglsl "[dev] compile glsl shaders"
+{
+    chdir("external/DOWNLOADS/glslang-master/StandAlone")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Color.vert.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Color.vert")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Color.frag.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Color.frag")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/BackgroundImage.vert.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/BackgroundImage.vert")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/BackgroundImage.frag.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/BackgroundImage.frag")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Image.vert.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Image.vert")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Image.frag.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/Image.frag")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/TextSDF.vert.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/TextSDF.vert")
+    system("./glslangValidator -V -x -o ../../../../src/lib/nhcss/Common/Data/Shaders/Main/TextSDF.frag.inc ../../../../src/lib/nhcss/Common/Data/Shaders/Main/TextSDF.frag")
+}
+
+--include "generate includes"
+{
+    chdir()
+    mkdir("include/netzhaut")
+    copy("src/lib/netzhaut/netzhaut.h", "include/netzhaut")
+    copy("src/lib/netzhaut/netzhauttty.h", "include/netzhaut")
+    copy("src/lib/netzhaut/netzhautwsi.h", "include/netzhaut")
+    copy("src/lib/netzhaut/netzhautgfx.h", "include/netzhaut")
+    copy("src/lib/netzhaut/netzhauthtml.h", "include/netzhaut")
+    copy("src/lib/netzhaut/nhcore", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhtty", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhloader", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhencoding", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhwsi", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhgfx", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhhtml", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhwebidl", "include/netzhaut", true)
+    copy("src/lib/netzhaut/nhdom", "include/netzhaut", true)
+}
+
+--iinclude "install includes"
+{
+    copy("include/netzhaut", "usr/local/include", true, true)
+}
+
+// DOCS ============================================================================================
+
+--clndocs "[dev] clone docs"
+{
+    mkdir("external/DOWNLOADS")
+    chdir("external/DOWNLOADS")
+    system("git clone https://github.com/netzhautProject/docs.git")
+    chdir()
+}
+
+--plldocs "[dev] pull docs"
+{
+    chdir("external/DOWNLOADS/docs")
+    system("git pull origin HEAD")
+    chdir()
+}
+
+--gendocs "[dev] generate docs"
+{
+    generateFooter()
+    chdir("external/DOWNLOADS/docs/docs/Dev")
+    system("doxygen Doxyfile")
+    chdir("external/DOWNLOADS/docs/docs/API")
+    system("doxygen Doxyfile")
+    chdir()
+    generateHomepage()
+    chdir()
+}
+
+--pshdocs "[dev] push docs"
+{
+    chdir(external/DOWNLOADS/docs)
+    system("git add .")
+    system("git commit -m \"${PROJECT_VERSION}\"")
+    system("git push origin HEAD")
+    chdir()
+}
+
+// INITIALIZE ======================================================================================
+
+--init "initialize project"
+{
+    mkdir("external/DOWNLOADS")
+    chdir("external/DOWNLOADS")
+
+    system("wget -O tmp.zip https://github.com/KhronosGroup/Vulkan-Headers/archive/master.zip")
+    system("unzip -o tmp.zip")
+    system("wget -O tmp.zip https://github.com/zeux/volk/archive/master.zip")
+    system("unzip -o tmp.zip")
+    system("rm tmp.zip")
+
+    chdir()
+
+    copy("external/DOWNLOADS/volk-master/volk.h", "src/lib/nhgfx/Common/Vulkan")
+    copy("external/DOWNLOADS/Vulkan-Headers-master/include/vulkan/*", "src/lib/nhgfx/Common/Vulkan")
+
+    copy("src/lib/nhcore/Common/API.h", "src/lib/netzhaut/nhcore/Common")
+    copy("src/lib/nhcore/Common/Result.h", "src/lib/netzhaut/nhcore/Common")
+    copy("src/lib/nhtty/Common/API.h", "src/lib/netzhaut/nhtty/Common")
+    copy("src/lib/nhtty/Common/Result.h", "src/lib/netzhaut/nhtty/Common")
+    copy("src/lib/nhloader/Common/API.h", "src/lib/netzhaut/nhloader/Common")
+    copy("src/lib/nhloader/Common/Result.h", "src/lib/netzhaut/nhloader/Common")
+    copy("src/lib/nhencoding/Common/API.h", "src/lib/netzhaut/nhencoding/Common")
+    copy("src/lib/nhencoding/Common/Result.h", "src/lib/netzhaut/nhencoding/Common")
+    copy("src/lib/nhwsi/Common/API.h", "src/lib/netzhaut/nhwsi/Common")
+    copy("src/lib/nhwsi/Common/Result.h", "src/lib/netzhaut/nhwsi/Common")
+    copy("src/lib/nhdom/Common/API.h", "src/lib/netzhaut/nhdom/Common")
+    copy("src/lib/nhdom/Common/Result.h", "src/lib/netzhaut/nhdom/Common")
+    copy("src/lib/nhhtml/Common/API.h", "src/lib/netzhaut/nhhtml/Common")
+    copy("src/lib/nhhtml/Common/Result.h", "src/lib/netzhaut/nhhtml/Common")
+    copy("src/lib/nhwebidl/Common/API.h", "src/lib/netzhaut/nhwebidl/Common")
+    copy("src/lib/nhwebidl/Common/Result.h", "src/lib/netzhaut/nhwebidl/Common")
+    copy("src/lib/nhgfx/Common/API.h", "src/lib/netzhaut/nhgfx/Common")
+    copy("src/lib/nhgfx/Common/Result.h", "src/lib/netzhaut/nhgfx/Common")
+    copy("src/lib/nhgfx/Common/Vulkan", "src/lib/netzhaut/nhgfx/Common", true)
+
+    chdir("external/xxd")
+    system("gcc -o xxd xxd.c")
+
+    chdir("external/DOWNLOADS/volk-master")
+    system("gcc -c -o volk.o volk.c -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\\\"../Vulkan-Headers-master/include/vulkan/vulkan.h\\\"")
+    system("ar rcs libvolk.a volk.o")
+}
+
+// NEWS ============================================================================================
+
+addNews("<p><b>2021-04-13</b><br>hello world!</p>")
+
