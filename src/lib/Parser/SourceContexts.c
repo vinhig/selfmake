@@ -43,6 +43,10 @@ SM_BEGIN()
 
     SourceContext.type = type;
     SourceContext.path_p = NULL;
+    SourceContext.compileArgs_p = NULL;
+    SourceContext.linkArgs_p = NULL;
+    SourceContext.build = SM_FALSE;
+    SourceContext.install = SM_FALSE;
     SourceContext.major = 0;
     SourceContext.minor = 0;
     SourceContext.patch = 0;
@@ -110,6 +114,8 @@ SM_BEGIN()
     if (strlen(SourceContext_p->name_p) > Array_p->maxNameLength) {
         Array_p->maxNameLength = strlen(SourceContext_p->name_p);
     }
+
+    Array_p->length++;
 
 SM_END(SM_SUCCESS)
 }

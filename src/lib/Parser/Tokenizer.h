@@ -16,27 +16,6 @@
 
 #endif
 
-/** @addtogroup selfmakeEnums
- *  @{
- */
-
-    typedef enum SM_TOKEN {
-        SM_TOKEN_UNDEFINED,
-        SM_TOKEN_COMMA,
-        SM_TOKEN_IDENTIFIER,
-        SM_TOKEN_STRING,
-        SM_TOKEN_CURLY_BRACKET_RIGHT,
-        SM_TOKEN_CURLY_BRACKET_LEFT,
-        SM_TOKEN_ROUND_BRACKET_RIGHT,
-        SM_TOKEN_ROUND_BRACKET_LEFT,
-        SM_TOKEN_ANGLE_BRACKET_RIGHT,
-        SM_TOKEN_ANGLE_BRACKET_LEFT,
-        SM_TOKEN_HYPHEN_MINUS,
-        SM_TOKEN_EOF,
-    } SM_TOKEN;
-    
-/** @} */
-
 /** @addtogroup selfmakeStructs
  *  @{
  */

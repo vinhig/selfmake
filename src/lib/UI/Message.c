@@ -36,6 +36,7 @@ SM_BEGIN()
 
     sm_Thread *Thread_p = _sm_getThread();
     sm_Runtime *Runtime_p = Thread_p && Thread_p->Runtime_p ? Thread_p->Runtime_p : &SM_DEFAULT_RUNTIME;
+    SM_BYTE *name_p = sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0];
 
     if (Runtime_p->quiet) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
 
@@ -54,9 +55,9 @@ SM_BEGIN()
         va_end(args);
     
         if (messages == 0) {
-            printf("%s: -> \e[1;32m%s\e[0m\n%s:\n", Runtime_p->name_p, message_p, Runtime_p->name_p);
+            printf("%s: -> \e[1;32m%s\e[0m\n%s:\n", name_p, message_p, name_p);
         }
-        else {printf("%s:\n%s: -> \e[1;32m%s\e[0m\n%s:\n", Runtime_p->name_p, Runtime_p->name_p, message_p, Runtime_p->name_p);}
+        else {printf("%s:\n%s: -> \e[1;32m%s\e[0m\n%s:\n", name_p, name_p, message_p, name_p);}
     
         messages = 0;
     }
@@ -71,6 +72,7 @@ SM_BEGIN()
 
     sm_Thread *Thread_p = _sm_getThread();
     sm_Runtime *Runtime_p = Thread_p && Thread_p->Runtime_p ? Thread_p->Runtime_p : &SM_DEFAULT_RUNTIME;
+    SM_BYTE *name_p = sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0];
 
     if (Runtime_p->quiet) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
 
@@ -88,7 +90,7 @@ SM_BEGIN()
 
         va_end(args);
 
-        printf("%s: %s\n", Runtime_p->name_p, message_p);
+        printf("%s: %s\n", name_p, message_p);
         messages++;
     }
 
@@ -102,6 +104,7 @@ SM_BEGIN()
 
     sm_Thread *Thread_p = _sm_getThread();
     sm_Runtime *Runtime_p = Thread_p && Thread_p->Runtime_p ? Thread_p->Runtime_p : &SM_DEFAULT_RUNTIME;
+    SM_BYTE *name_p = sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0];
 
     if (Runtime_p->quiet) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
 
@@ -119,7 +122,7 @@ SM_BEGIN()
 
         va_end(args);
 
-        printf("%s: \e[1;35mNOTICE:\e[0m %s\n", Runtime_p->name_p, message_p);
+        printf("%s: \e[1;35mNOTICE:\e[0m %s\n", name_p, message_p);
         messages++;
     }
 
@@ -133,6 +136,7 @@ SM_BEGIN()
 
     sm_Thread *Thread_p = _sm_getThread();
     sm_Runtime *Runtime_p = Thread_p && Thread_p->Runtime_p ? Thread_p->Runtime_p : &SM_DEFAULT_RUNTIME;
+    SM_BYTE *name_p = sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0];
 
     if (Runtime_p->quiet) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
 
@@ -169,6 +173,7 @@ SM_BEGIN()
 
     sm_Thread *Thread_p = _sm_getThread();
     sm_Runtime *Runtime_p = Thread_p && Thread_p->Runtime_p ? Thread_p->Runtime_p : &SM_DEFAULT_RUNTIME;
+    SM_BYTE *name_p = sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0];
 
     if (Runtime_p->quiet) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
 
@@ -179,10 +184,10 @@ SM_BEGIN()
     else 
     {
         if (result) {
-            printf("%s: -> \e[1;31mERROR\e[0m %s\n", Runtime_p->name_p, SM_RESULTS_PP[result]);
-            printf("%s: -> \e[1;31mEXECUTION ERROR\e[0m -> \e[1;31mEXITING\e[0m\n", Runtime_p->name_p);
+            printf("%s: -> \e[1;31mERROR\e[0m %s\n", name_p, SM_RESULTS_PP[result]);
+            printf("%s: -> \e[1;31mEXECUTION ERROR\e[0m -> \e[1;31mEXITING\e[0m\n", name_p);
         }
-        else {printf("%s:\n%s: -> \e[1;32mEXECUTION SUCCESS\e[0m -> \e[1;32mEXITING\e[0m\n", Runtime_p->name_p, Runtime_p->name_p);}
+        else {printf("%s:\n%s: -> \e[1;32mEXECUTION SUCCESS\e[0m -> \e[1;32mEXITING\e[0m\n", name_p, name_p);}
     }
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)

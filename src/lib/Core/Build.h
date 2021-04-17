@@ -20,7 +20,7 @@
  */
 
     SM_RESULT sm_build(
-        sm_Runtime *Runtime_p, sm_SourceContext *Context_p, SM_BOOL install
+        sm_Runtime *Runtime_p, sm_SourceContext *Context_p
     ); 
 
 /** @} */

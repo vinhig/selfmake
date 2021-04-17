@@ -1,0 +1,85 @@
+// CONFIGURE =======================================================================================
+
+set(PROJ_DIR,"${WRK_DIR}")
+set(LIB_DEST,"${WRK_DIR}/lib/")
+set(PROJ_STAGE,"experimental development")
+
+// SOURCE ==========================================================================================
+
+shared(selfmake,"${WRK_DIR}/src/lib/")
+link(selfmake,"-lpthread -ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
+
+source(
+    selfmake
+    "Common/Result.c"
+    "Core/Runtime.c"
+    "Core/Utils.c"
+    "Core/Thread.c"
+    "Core/File.c"
+    "Core/Configure.c"
+    "Core/Build.c"
+    "Parser/Tokenizer.c"
+    "Parser/Parser.c"
+    "Parser/Variables.c"
+    "Parser/Sources.c"
+    "Parser/SourceContexts.c"
+    "Parser/Functions.c"
+    "UI/Message.c"
+)
+
+// DOCS ============================================================================================
+
+--clndocs "[dev] clone docs"
+{
+    chdir("external")
+    system("git clone https://github.com/netzhautproject/selfmake_docs.git")
+    chdir()
+}
+
+--plldocs "[dev] pull docs"
+{
+    chdir("external/selfmake_docs")
+    system("git pull origin HEAD")
+    chdir()
+}
+
+--gendocs "[dev] generate docs"
+{
+    generateFooter()
+    chdir("external/selfmake_docs/docs/Dev")
+    system("doxygen Doxyfile")
+    chdir()
+    chdir("external/selfmake_docs/docs/API")
+    system("doxygen Doxyfile")
+    chdir()
+    generateHomepage()
+    chdir()
+}
+
+--pshdocs "[dev] push docs"
+{
+    chdir("external/selfmake_docs")
+    system("git add .")
+    system("git commit -m \"${PROJ_VER}\"")
+    system("git push origin HEAD")
+    chdir()
+}
+
+// PUSH ============================================================================================
+
+--psh "[dev] push new version"
+{
+    chdir()
+    system("git add .")
+    system("git commit -m \"${PROJ_VER}\"")
+    system("git push origin HEAD")
+    chdir()
+}
+
+// NEWS ============================================================================================
+
+set(
+    NEWS
+    "<p><b>2021-04-17</b><br>hello world!</p>"
+)
+

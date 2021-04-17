@@ -55,7 +55,7 @@ SM_BEGIN()
     int patch = Context_p->patch;
 
     SM_BYTE tmp_p[255] = {0};
-    sprintf(tmp_p, "/tmp/%s", Runtime_p->name_p);
+    sprintf(tmp_p, "/tmp/%s", sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0]);
     chdir(tmp_p);
 
 #ifdef __unix__
@@ -79,11 +79,11 @@ SM_BEGIN()
     else {SM_DIAGNOSTIC_END(SM_ERROR_CANT_OPEN_DIR)}
 
     SM_BYTE libPath_p[256] = {'\0'};
-    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->value_p, libName_p, major, minor, patch);
+    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p, major, minor, patch);
     SM_BYTE symPath1_p[256] = {'\0'};
-    sprintf(symPath1_p, "%s/lib%s.so.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->value_p, libName_p, major);
+    sprintf(symPath1_p, "%s/lib%s.so.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p, major);
     SM_BYTE symPath2_p[256] = {'\0'};
-    sprintf(symPath2_p, "%s/lib%s.so", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->value_p, libName_p);
+    sprintf(symPath2_p, "%s/lib%s.so", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p);
   
     SM_CHECK(sm_createSharedLibraryUsingGCC(objects_p, libPath_p, extra_p))
 
@@ -94,7 +94,7 @@ SM_BEGIN()
 
 #endif 
 
-    chdir(Runtime_p->projectDirectory_p);
+    chdir(sm_getVariable(&Runtime_p->VariableArray, "WRK_DIR")->values_pp[0]);
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }
@@ -154,9 +154,7 @@ static SM_RESULT sm_compileFiles(
 {
 SM_BEGIN()
 
-    SM_BYTE path_p[2048] = {'\0'};
-    sprintf(path_p, "%s%s", Runtime_p->projectDirectory_p, Context_p->path_p);
-    chdir(path_p);
+    chdir(Context_p->path_p);
 
     for (int i = 0; i < Runtime_p->SourceArray.length; ++i) 
     {
@@ -168,7 +166,7 @@ SM_BEGIN()
             SM_BYTE fileName_p[255] = {0};
             sm_getObjectFileName(Source_p, fileName_p);
 
-            sprintf(tmp_p, "/tmp/%s/%s", Runtime_p->name_p, fileName_p);
+            sprintf(tmp_p, "/tmp/%s/%s", sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0], fileName_p);
             SM_BYTE empty = 0;
 
             if (Context_p->type == SM_SOURCE_CONTEXT_SHARED_LIBRARY) {
@@ -179,7 +177,7 @@ SM_BEGIN()
         }
     }
 
-    chdir(Runtime_p->projectDirectory_p);
+    chdir(sm_getVariable(&Runtime_p->VariableArray, "WRK_DIR")->values_pp[0]);
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }
@@ -224,34 +222,26 @@ SM_DIAGNOSTIC_END(SM_SUCCESS)
 // BUILD ===========================================================================================
 
 SM_RESULT sm_build(
-    sm_Runtime *Runtime_p, sm_SourceContext *Context_p, SM_BOOL install) 
+    sm_Runtime *Runtime_p, sm_SourceContext *Context_p) 
 {
 SM_BEGIN()
 
-    chdir(Runtime_p->projectDirectory_p);
-
     sm_operationf("BUILD %s", Context_p->name_p);
-
-    if (Runtime_p->buildCallback_p) {
-
-    }
 
     SM_BYTE empty = 0;
     SM_BYTE tmp_p[255];
-    sprintf(tmp_p, "/tmp/%s", Runtime_p->name_p);
+    sprintf(tmp_p, "/tmp/%s", sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0]);
 
     SM_CHECK(sm_createDir(tmp_p))
 
     SM_CHECK(sm_compileFiles(Runtime_p, Context_p))
     SM_CHECK(sm_createLibrary(Runtime_p, Context_p))
 
-    if (install) {
+//    if (install) {
 //        SM_CHECK(SM_ERROR_BAD_STATE, sm_installLibrary(
 //            Library_p->name_p, 0, 0, 0 
 //        ))
-    }
-
-    chdir(Runtime_p->projectDirectory_p);
+//    }
 
     SM_CHECK(sm_removeDir(tmp_p))
 

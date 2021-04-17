@@ -16,31 +16,9 @@
 
 #endif
 
-/** @addtogroup selfmakeEnums
- *  @{
- */
-
-    typedef enum SM_SOURCE_CONTEXT {
-        SM_SOURCE_CONTEXT_SHARED_LIBRARY,
-        SM_SOURCE_CONTEXT_STATIC_LIBRARY,
-    } SM_SOURCE_CONTEXT;
-
-/** @} */
-
 /** @addtogroup selfmakeStructs
  *  @{
  */
-
-    typedef struct sm_SourceContext {
-        SM_SOURCE_CONTEXT type;
-        SM_BYTE *path_p;
-        SM_BYTE *name_p;
-        SM_BYTE *compileArgs_p;
-        SM_BYTE *linkArgs_p;
-        SM_BOOL build;
-        SM_BOOL install;
-        long major, minor, patch;
-    } sm_SourceContext;
 
     typedef struct sm_SourceContextArray {
         int length;

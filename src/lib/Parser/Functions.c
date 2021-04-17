@@ -54,8 +54,6 @@ SM_BEGIN()
 
     if (Function_p->arguments <= 0 || Function_p->arguments > 4) {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
 
-    chdir(sm_getVariable(&Runtime_p->VariableArray, "PROJECT_DIRECTORY")->value_p);
-
     switch(Function_p->arguments)
     {
         case 2 :
@@ -77,12 +75,14 @@ static SM_RESULT sm_executeChdirFunction(
 {
 SM_BEGIN()
 
-    chdir(sm_getVariable(&Runtime_p->VariableArray, "PROJECT_DIRECTORY")->value_p);
+    if (Function_p->arguments == 0) {
+        sm_updateVariable(&Runtime_p->VariableArray, "WRK_DIR", sm_getVariable(&Runtime_p->VariableArray, "PROJ_DIR")->values_pp, 1);
+    }
+    else {
+        sm_updateVariable(&Runtime_p->VariableArray, "WRK_DIR", Function_p->arguments_pp, 1);
+    }
 
-    if (Function_p->arguments != 1) {SM_DIAGNOSTIC_END(SM_SUCCESS)}
-
-    sm_messagef("chdir %s", Function_p->arguments_pp[0]);
-    chdir(Function_p->arguments_pp[0]);
+    sm_messagef("chdir %s", sm_getVariable(&Runtime_p->VariableArray, "WRK_DIR")->values_pp[0]);
 
 SM_END(SM_SUCCESS)
 }
@@ -128,14 +128,18 @@ SM_BEGIN()
     memcpy(arguments_pp, Function_p->arguments_pp, sizeof(SM_BYTE*) * Function_p->arguments);
 
     for (int i = 0; i < Function_p->arguments; ++i) {
-        Function_p->arguments_pp[i] = sm_replaceVariables(&Runtime_p->VariableArray, Function_p->arguments_pp[i]);
+        Function_p->arguments_pp[i] = sm_replaceVariables(&Runtime_p->VariableArray, arguments_pp[i]);
         SM_CHECK_NULL(Function_p->arguments_pp[i])
     }
-
-    SM_RESULT result;
+    SM_RESULT result = SM_SUCCESS;
 
     if (sm_caseInsensitiveMatch(Function_p->name_p, "shared")) {
         result = sm_addSourceContext(&Runtime_p->SourceContextArray, Function_p, SM_SOURCE_CONTEXT_SHARED_LIBRARY);
+        if (!result && Runtime_p->sourceContextCallback_f) {
+            result = Runtime_p->sourceContextCallback_f(
+                Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[Runtime_p->SourceContextArray.length - 1]
+            );
+        }
     }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "compile")) {
         result = sm_addCompileArguments(&Runtime_p->SourceContextArray, Function_p);
@@ -158,6 +162,16 @@ SM_BEGIN()
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "system")) {
         result = sm_executeSystemFunction(Function_p);
     }
+    else if (sm_caseInsensitiveMatch(Function_p->name_p, "set")) {
+        result = sm_updateVariable(
+            &Runtime_p->VariableArray, Function_p->arguments_pp[0], Function_p->arguments_pp + 1, 
+            Function_p->arguments - 1
+        );
+    }
+
+    if (!result && Runtime_p->functionCallback_f) {
+        result = Runtime_p->functionCallback_f(Runtime_p, Function_p);
+    }
 
     for (int i = 0; i < Function_p->arguments; ++i) {
         free(Function_p->arguments_pp[i]);
@@ -177,11 +191,11 @@ SM_RESULT sm_executeFunctions(
 SM_BEGIN()
 
     if (!Parser_p->executed) {
-	for (int d = 0; d < Parser_p->definitions; ++d) {
-	    if (Parser_p->Definitions_p[d].type == SM_DEFINITION_FUNCTION) {
-		SM_CHECK(sm_executeFunction(Runtime_p, &Parser_p->Definitions_p[d].Function))
-	    }
-	}
+        for (int d = 0; d < Parser_p->definitions; ++d) {
+            if (Parser_p->Definitions_p[d].type == SM_DEFINITION_FUNCTION) {
+                SM_CHECK(sm_executeFunction(Runtime_p, &Parser_p->Definitions_p[d].Function))
+            }
+        }
 	Parser_p->executed = SM_TRUE;
     }
 

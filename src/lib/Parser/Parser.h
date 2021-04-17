@@ -18,30 +18,9 @@
 
 #endif
 
-/** @addtogroup selfmakeEnums
- *  @{
- */
-
-    typedef enum SM_DEFINITION {
-        SM_DEFINITION_UNDEFINED,
-        SM_DEFINITION_LONG_OPTION,
-        SM_DEFINITION_FUNCTION,
-        SM_DEFINITION_BLOCK,
-    } SM_DEFINITION;
-    
-/** @} */
-
 /** @addtogroup selfmakeStructs
  *  @{
  */
-
-    typedef struct sm_Function {
-        SM_DEFINITION type;
-        SM_BYTE *name_p;
-        unsigned int arguments;
-        SM_BYTE **arguments_pp;
-        SM_TOKEN *argumentTypes_p;
-    } sm_Function;
 
     typedef union sm_Definition sm_Definition;
 

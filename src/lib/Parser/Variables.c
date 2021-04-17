@@ -21,35 +21,17 @@
 #include <unistd.h>
 #include <ctype.h>
 
-// VARS ============================================================================================
-
-const SM_BYTE *SM_VARIABLE_NAMES_PP[] = {
-    "PROJECT_VERSION",
-    "PROJECT_DIRECTORY",
-    "LIB_DEST",
-};
-
 // INIT ============================================================================================
 
-SM_RESULT sm_initVariableArray(
+void sm_initVariableArray(
     sm_VariableArray *Array_p)
 {
 SM_BEGIN()
 
-#include SM_DEFAULT_CHECK
+    Array_p->length = 0;
+    Array_p->Variables_p = NULL;
 
-    Array_p->length = SM_VARIABLE_COUNT;
-    Array_p->Variables_p = malloc(sizeof(sm_Variable) * SM_VARIABLE_COUNT);
-    SM_CHECK_NULL(Array_p->Variables_p)
-
-    for (int i = 0; i < SM_VARIABLE_COUNT; ++i) {
-        Array_p->Variables_p[i].value_p = NULL;
-        Array_p->Variables_p[i].name_p  = (SM_BYTE*)SM_VARIABLE_NAMES_PP[i];
-    }
-
-#include SM_CUSTOM_CHECK
-
-SM_DIAGNOSTIC_END(SM_SUCCESS)
+SM_SILENT_END()
 }
 
 // UPDATE ==========================================================================================
@@ -68,20 +50,68 @@ SM_BEGIN()
 SM_END(NULL)
 }
 
+static sm_Variable *sm_createVariable(
+    sm_VariableArray *Array_p, SM_BYTE *name_p)
+{
+SM_BEGIN()
+
+    if (!Array_p->Variables_p) {
+        Array_p->Variables_p = malloc(sizeof(sm_Variable));
+        SM_CHECK_NULL(NULL, Array_p->Variables_p)
+    }
+    else {
+        Array_p->Variables_p = realloc(Array_p->Variables_p, sizeof(sm_Variable) * (Array_p->length + 1));
+        SM_CHECK_NULL(NULL, Array_p->Variables_p)
+    }
+ 
+    sm_Variable *Variable_p = &Array_p->Variables_p[Array_p->length];
+
+    Variable_p->values_pp = NULL;
+    Variable_p->valueCount = 0;
+
+    Variable_p->name_p = malloc(strlen(name_p) + 1);
+    SM_CHECK_NULL(NULL, Variable_p->name_p)
+    sprintf(Variable_p->name_p, name_p);
+
+    Array_p->length++;
+
+SM_END(Variable_p)
+}
+
 SM_RESULT sm_updateVariable(
-    sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE *string_p)
+    sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE **values_pp, int valueCount)
 {
 SM_BEGIN()
 
 #include SM_DEFAULT_CHECK
 
     sm_Variable *Variable_p = sm_getVariable(Array_p, variable_p);
+    if (!Variable_p) {
+        Variable_p = sm_createVariable(Array_p, variable_p);
+    }
     SM_CHECK_NULL(Variable_p)
 
-    free(Variable_p->value_p);
-    Variable_p->value_p = malloc(strlen(string_p) + 1);
-    SM_CHECK_NULL(Variable_p->value_p)
-    sprintf(Variable_p->value_p, string_p);
+    if (Variable_p->values_pp) {
+        for (int i = 0; i < Variable_p->valueCount; ++i) {
+            free(Variable_p->values_pp[i]);
+        }
+        free(Variable_p->values_pp);
+    }
+
+    Variable_p->values_pp = malloc(sizeof(SM_BYTE*) * valueCount);
+    SM_CHECK_NULL(Variable_p->values_pp)
+
+    for (int i = 0; i < valueCount; ++i) {
+        Variable_p->values_pp[i] = malloc(strlen(values_pp[i]) + 1);
+        SM_CHECK_NULL(Variable_p->values_pp[i])
+        sprintf(Variable_p->values_pp[i], values_pp[i]);
+    }
+
+    Variable_p->valueCount = valueCount;
+
+    if (!strcmp(Variable_p->name_p, "WRK_DIR")) {
+        chdir(Variable_p->values_pp[0]);
+    }
 
 #include SM_CUSTOM_CHECK
 
@@ -116,14 +146,14 @@ SM_BEGIN()
 
         if (!Var_p) {SM_END(string_p)}
 
-        SM_BYTE *newString_p = malloc((strlen(begin_p) - nameLength - 3) + strlen(Var_p->name_p) + 1);
+        SM_BYTE *newString_p = malloc((strlen(begin_p) - nameLength - 3) + strlen(Var_p->values_pp[0]) + 1);
         SM_CHECK_NULL(NULL, newString_p)
 
         *end_p = 0;
         *begin_p = 0;
 
         sprintf(newString_p, string_p);
-        sprintf(newString_p + strlen(newString_p), Var_p->value_p);
+        sprintf(newString_p + strlen(newString_p), Var_p->values_pp[0]);
         sprintf(newString_p + strlen(newString_p), end_p + 1); 
 
         free(string_p);

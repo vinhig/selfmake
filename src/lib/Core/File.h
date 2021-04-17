@@ -54,10 +54,6 @@
         SM_BYTE *filename_p
     );
 
-    SM_RESULT sm_writeCharsToFile(
-        SM_BYTE *filename_p, SM_BYTE *SM_BYTEs_p
-    );
-
     void sm_initFileArray(
         sm_FileArray *Array_p
     );

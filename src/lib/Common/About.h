@@ -42,19 +42,19 @@
  */
 
     /**
-     * 2021-02-23 | 0
+     * 2021-04-17 | 0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
     #define SM_MAJOR_VERSION 0
 
     /**
-     * 2021-02-23 | 0
+     * 2021-04-17 | 0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
     #define SM_MINOR_VERSION 0
 
     /**
-     * 2021-02-23 | 0
+     * 2021-04-17 | 0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
     #define SM_PATCH_VERSION 0

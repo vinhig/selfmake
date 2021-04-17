@@ -4,9 +4,9 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 /**
- * netzhaut - Web Browser Engine
- * Copyright (C) 2020 The netzhaut Authors
- * Published under LGPLv3
+ * selfmake - Script Language
+ * Copyright (C) 2021 The selfmake Authors
+ * Published under MIT
  */
 
 #endif

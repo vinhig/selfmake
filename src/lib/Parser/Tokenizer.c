@@ -141,7 +141,7 @@ SM_BEGIN()
         SM_END(&bytes_p[1])
     }
 
-    while (*bytes_p && sm_isASCIIAlpha(*bytes_p)) {bytes_p++;}
+    while (*bytes_p && (sm_isASCIIAlpha(*bytes_p) || *bytes_p == '_')) {bytes_p++;}
     if (!*bytes_p) {SM_END(NULL)}
 
     SM_BYTE tmp = *bytes_p;

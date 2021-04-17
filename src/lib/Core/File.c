@@ -63,10 +63,10 @@ SM_BEGIN()
     SM_BYTE fullCommand_p[1024] = {'\0'};
 
     if (out_p[0] != '/') {
-        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s/%s" : "%s -p %s/%s %s/%s", command_p, sm_getVariable(Array_p, "PROJECT_DIRECTORY")->value_p, in_p, sm_getVariable(Array_p, "PROJECT_DIRECTORY")->value_p, out_p);
+        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s/%s" : "%s -p %s/%s %s/%s", command_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], in_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], out_p);
     }
     else {
-        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s" : "%s -p %s/%s %s", command_p, sm_getVariable(Array_p, "PROJECT_DIRECTORY")->value_p, in_p, out_p);
+        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s" : "%s -p %s/%s %s", command_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], in_p, out_p);
     }
 
     int status = system(fullCommand_p);
@@ -111,18 +111,18 @@ SM_BEGIN()
 SM_END(access(filename_p, F_OK) != -1 ? SM_TRUE : SM_FALSE)
 }
 
-SM_RESULT sm_writeCharsToFile(
-    SM_BYTE *filename_p, SM_BYTE *SM_BYTEs_p)
+SM_RESULT sm_writeBytesToFile(
+    SM_BYTE *filename_p, SM_BYTE *bytes_p)
 {
 SM_BEGIN()
 
-    SM_CHECK_NULL(SM_BYTEs_p)
+    SM_CHECK_NULL(bytes_p)
     SM_CHECK_NULL(filename_p)
 
     FILE *f = fopen(filename_p, "w");
     SM_CHECK_NULL(f)    
     
-    fprintf(f, "%s\n", SM_BYTEs_p);
+    fprintf(f, "%s\n", bytes_p);
     fclose(f);
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
@@ -130,7 +130,7 @@ SM_DIAGNOSTIC_END(SM_SUCCESS)
 
 // FILE ARRAY ======================================================================================
 
-static void *sm_getFileData(
+SM_BYTE *sm_getFileData(
     const SM_BYTE* path_p, long *size_p)
 {
 SM_BEGIN()

@@ -14,7 +14,7 @@
 #include "../Common/Macros/Macros.h"
 
 #include SM_FLOW
-#include SM_DEFAULT_CHECK
+#include SM_CUSTOM_CHECK
 
 #include <unistd.h>
 #include <string.h>
@@ -30,21 +30,49 @@
 
 // DIRECTORY =======================================================================================
 
-SM_RESULT sm_getProcessDirectory(
-    SM_BYTE *buffer_p, unsigned int size)
+static SM_BYTE *procDir_p = NULL;
+static SM_BYTE *wrkDir_p = NULL;
+
+SM_BYTE *sm_getProcessDirectory()
 {
 SM_BEGIN()
 
+    if (procDir_p) {SM_END(procDir_p)}
+
+    int size = 1024;
+    SM_BYTE buffer_p[1024] = {0};
+
     if (readlink("/proc/self/exe", buffer_p, size) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, size) == -1
-    &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
+    &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_END(NULL)}
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
-    if (i == -1) {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
+    if (i == -1) {SM_END(NULL)}
     buffer_p[i] = '\0'; // remove exe name
 
-SM_DIAGNOSTIC_END(SM_SUCCESS)
+    procDir_p = malloc(strlen(buffer_p) + 1);
+    SM_CHECK_NULL(NULL, procDir_p)
+    sprintf(procDir_p, buffer_p);
+
+SM_END(procDir_p)
+}
+
+SM_BYTE *sm_getWorkDirectory()
+{
+SM_BEGIN()
+
+    if (wrkDir_p) {SM_END(wrkDir_p)}
+
+    int size = 1024;
+    SM_BYTE buffer_p[1024] = {0};
+    getcwd(buffer_p, size);
+
+    wrkDir_p = malloc(strlen(buffer_p) + 1);
+    SM_CHECK_NULL(NULL, wrkDir_p)
+    sprintf(wrkDir_p, buffer_p);
+
+SM_END(wrkDir_p)
 }
 
 const SM_BYTE *sm_getHomeDir()
@@ -84,10 +112,11 @@ SM_BEGIN()
 
     sm_messagef("REMOVE DIR %s", path_p);
  
-    int err = rmdir(path_p);
-    if (err) {
-        SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)
-    }
+    SM_BYTE command_p[255];
+    sprintf(command_p, "rm -r %s", path_p);
+
+    int status = system(command_p);
+    if (WEXITSTATUS(status) || WIFSIGNALED(status)) {SM_DIAGNOSTIC_END(SM_ERROR_CP_EXECUTION_FAILED)}
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }

@@ -27,15 +27,14 @@
         SM_BOOL quiet;
         SM_BOOL GUI;
         SM_BOOL showParseTree;
-        SM_BYTE *name_p;
         SM_BYTE *prefix_p;
-        SM_BYTE *projectDirectory_p;
         sm_ParserArray ParserArray;
         sm_SourceArray SourceArray; 
         sm_SourceContextArray SourceContextArray; 
         sm_VariableArray VariableArray; 
         sm_FileArray FileArray; 
-        void *buildCallback_p;
+        sm_functionCallback_f functionCallback_f;
+        sm_sourceContextCallback_f sourceContextCallback_f;
     } sm_Runtime;
 
 /** @} */
