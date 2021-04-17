@@ -42,22 +42,28 @@
  */
 
     /**
-     * 2021-04-17 | 0
+     * 2021-04-17 | v0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
     #define SM_MAJOR_VERSION 0
 
     /**
-     * 2021-04-17 | 0
+     * 2021-04-17 | v0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
     #define SM_MINOR_VERSION 0
 
     /**
-     * 2021-04-17 | 0
+     * 2021-04-17 | v0.0.1
+     * - [Dajo Frey](https://github.com/DajoFrey): Fix invalid memory writes in sm_replaceVariables().
+     * - [Dajo Frey](https://github.com/DajoFrey): Add sm_terminate() and sm_destroyRuntime(). Not implemented yet though.
+     * - [Dajo Frey](https://github.com/DajoFrey): Rename sm_init() to sm_initialize().
+     * - [Dajo Frey](https://github.com/DajoFrey): Add sm_getSourceContextArray() and sm_getSourceContext().
+     *
+     * 2021-04-17 | v0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 0
+    #define SM_PATCH_VERSION 1
 
 /** @} */
 

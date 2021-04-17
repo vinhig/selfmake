@@ -61,6 +61,26 @@ SM_BEGIN()
 SM_SILENT_END()
 }
 
+sm_SourceContextArray *sm_getSourceContextArray(
+    sm_Runtime *Runtime_p)
+{
+SM_BEGIN()
+SM_END(&Runtime_p->SourceContextArray)
+}
+
+sm_SourceContext *sm_getSourceContext(
+    sm_Runtime *Runtime_p, SM_BYTE *name_p)
+{
+SM_BEGIN()
+
+    for (int i = 0; i < Runtime_p->SourceContextArray.length; ++i) {
+        sm_SourceContext *Context_p = &Runtime_p->SourceContextArray.SourceContexts_p[i];
+        if (!strcmp(Context_p->name_p, name_p)) {SM_END(Context_p)}
+    }
+
+SM_END(NULL)
+}
+
 void sm_setQuiet(
     sm_Runtime *Runtime_p, SM_BOOL quiet)
 {

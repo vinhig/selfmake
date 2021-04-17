@@ -16,18 +16,6 @@
 
 #endif
 
-/** @addtogroup selfmakeStructs
- *  @{
- */
-
-    typedef struct sm_SourceContextArray {
-        int length;
-        int maxNameLength;
-        sm_SourceContext *SourceContexts_p;
-    } sm_SourceContextArray;
-
-/** @} */
-
 /** @addtogroup selfmakeFunctions
  *  @{
  */

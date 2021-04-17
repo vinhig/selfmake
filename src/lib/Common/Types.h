@@ -89,8 +89,15 @@
         SM_BYTE *linkArgs_p;
         SM_BOOL build;
         SM_BOOL install;
-        long major, minor, patch;
+        long api, major, minor, patch;
+        long apiDate_p[3], majorDate_p[3], minorDate_p[3], patchDate_p[3];
     } sm_SourceContext;
+
+    typedef struct sm_SourceContextArray {
+        int length;
+        int maxNameLength;
+        sm_SourceContext *SourceContexts_p;
+    } sm_SourceContextArray;
 
     typedef struct sm_ValueArray {
         SM_BYTE **values_pp;

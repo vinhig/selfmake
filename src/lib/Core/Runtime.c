@@ -100,6 +100,22 @@ SM_BEGIN()
 
     for (int i = 1; i < argc; ++i) 
     {
+        if (argv_pp[i][0] == '-' && argv_pp[i][1] == '-')
+        {
+            sm_LongOption *Option_p = NULL;
+
+            for (int j = 0; j < Runtime_p->ParserArray.length; ++j) {
+                sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[j];
+                Option_p = sm_getLongOption(Parser_p, argv_pp[i] + 2);
+                if (Option_p) {break;}
+            }
+
+            if (!Option_p) {SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)}
+            SM_CHECK(sm_executeLongOption(Runtime_p, Option_p))
+
+            continue;
+        }
+
         if (argv_pp[i][0] == '-' && argv_pp[i][1] != '-')
         {
             negate = SM_FALSE, build = SM_FALSE;
@@ -125,22 +141,6 @@ SM_BEGIN()
                 sm_noticef("Invalid option \"%s\"", argv_pp[i]);
                 SM_END(SM_ERROR_INVALID_OPTION)
             }
-            continue;
-        }
-
-        if (argv_pp[i][0] == '-' && argv_pp[i][1] == '-')
-        {
-            sm_LongOption *Option_p = NULL;
-
-            for (int j = 0; j < Runtime_p->ParserArray.length; ++j) {
-                sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[j];
-                Option_p = sm_getLongOption(Parser_p, argv_pp[i] + 2);
-                if (Option_p) {break;}
-            }
-
-            if (!Option_p) {SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)}
-            SM_CHECK(sm_executeLongOption(Runtime_p, Option_p))
-
             continue;
         }
 
@@ -194,8 +194,7 @@ SM_BEGIN()
 
     SM_RESULT result = sm_parseArguments(Runtime_p, args, args_pp);
 
-    if (result == SM_SUCCESS)
-    {
+    if (result == SM_SUCCESS) {
         for (int i = 0; i < Runtime_p->SourceContextArray.length; ++i) {
             if (Runtime_p->SourceContextArray.SourceContexts_p[i].build) {
                 SM_CHECK(sm_build(Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[i]))
@@ -264,13 +263,26 @@ SM_BEGIN()
 SM_END(Runtime_p)
 }
 
-// INIT ============================================================================================
+void sm_destroyRuntime(
+    sm_Runtime *Runtime_p)
+{
+SM_BEGIN()
+SM_SILENT_END()
+}
 
-SM_RESULT sm_init()
+// INITIALIZE/TERMINATE ============================================================================
+
+SM_RESULT sm_initialize()
 {
     sm_initThreadPool();
     SM_CHECK(sm_initRuntime(&SM_DEFAULT_RUNTIME))
     SM_BYTE *name_p = "selfmake";
     sm_updateVariable(&SM_DEFAULT_RUNTIME.VariableArray, "NAME", &name_p, 1);
+}
+
+void sm_terminate()
+{
+SM_BEGIN()
+SM_SILENT_END()
 }
 

@@ -30,7 +30,7 @@ $DIR/src/bin/smmake/Main.c \
 $DIR/src/bin/smmake/Version.c \
 $DIR/src/bin/smmake/Documents.c \
 
-/$DIR/build/smmake -b
+/$DIR/build/smmake -bn
 
 if [ $? = 0 ]; then
     echo

@@ -22,11 +22,18 @@
  *  @{
  */
 
-    SM_RESULT sm_init(
+    SM_RESULT sm_initialize(
     );
     
+    void sm_terminate(
+    );
+
     sm_Runtime *sm_createRuntime(
         SM_BYTE *name_p
+    );
+
+    void sm_destroyRuntime(
+        sm_Runtime *Runtime_p
     );
 
     SM_RESULT sm_run(
@@ -43,6 +50,14 @@
 
     void sm_setSourceContextCallback(
         sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f
+    );
+
+    sm_SourceContextArray *sm_getSourceContextArray(
+        sm_Runtime *Runtime_p
+    );
+
+    sm_SourceContext *sm_getSourceContext(
+        sm_Runtime *Runtime_p, SM_BYTE *name_p
     );
 
     void sm_setQuiet(

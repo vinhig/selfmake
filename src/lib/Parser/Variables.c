@@ -146,7 +146,7 @@ SM_BEGIN()
 
         if (!Var_p) {SM_END(string_p)}
 
-        SM_BYTE *newString_p = malloc((strlen(begin_p) - nameLength - 3) + strlen(Var_p->values_pp[0]) + 1);
+        SM_BYTE *newString_p = malloc((strlen(string_p) - strlen(Var_p->name_p) - 3) + strlen(Var_p->values_pp[0]) + 1);
         SM_CHECK_NULL(NULL, newString_p)
 
         *end_p = 0;
