@@ -48,10 +48,16 @@
     #define SM_MAJOR_VERSION 0
 
     /**
+     * 2021-04-19 | v0.1.0
+     * - [Dajo Frey](https://github.com/DajoFrey): Add first iteration of binary building, mostly implemented in sm_build().
+     * - [Dajo Frey](https://github.com/DajoFrey): Add parameter to sm_addSourceContext() to offset argument parsing.
+     * - [Dajo Frey](https://github.com/DajoFrey): Add sm_setBeforeBuildCallback() and sm_setAfterBuildCallback().
+     * - [Dajo Frey](https://github.com/DajoFrey): Improve option parsing and language syntax. For this, sm_parseOption() is introduced.
+     *
      * 2021-04-17 | v0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_MINOR_VERSION 0
+    #define SM_MINOR_VERSION 1
 
     /**
      * 2021-04-17 | v0.0.1
@@ -63,7 +69,7 @@
      * 2021-04-17 | v0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 1
+    #define SM_PATCH_VERSION 0
 
 /** @} */
 

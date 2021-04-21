@@ -138,18 +138,16 @@ SM_BEGIN()
     FILE *fh = fopen(path_p, "rb");
     if (fh == NULL) {SM_END(NULL)}
     
-    if (fseek(fh, 0L, SEEK_END) != 0) {SM_END(NULL)}
-
+    if (fseek(fh, 0, SEEK_END) != 0) {SM_END(NULL)}
     long size = ftell(fh);
-
-    if (fseek(fh, 0L, SEEK_SET) != 0) {SM_END(NULL)}
+    rewind(fh);
 
     if(size <= 0) {
         fclose(fh);
         SM_END(NULL)
     }
 
-    SM_BYTE *data_p = (SM_BYTE*)malloc(((size_t)size) + 1); 
+    SM_BYTE *data_p = malloc(size + 1); 
     if (data_p == NULL) {SM_END(NULL)}
     
     fread(data_p, 1, size, fh);

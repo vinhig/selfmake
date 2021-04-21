@@ -29,7 +29,7 @@
     );
 
     SM_RESULT sm_addSourceContext(
-        sm_SourceContextArray *Array_p, sm_Function *Function_p, SM_SOURCE_CONTEXT type
+        sm_Runtime *Runtime_p, sm_Function *Function_p, SM_SOURCE_CONTEXT type, int offset
     );
 
     SM_RESULT sm_addCompileArguments(

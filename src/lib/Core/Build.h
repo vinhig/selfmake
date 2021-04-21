@@ -20,7 +20,7 @@
  */
 
     SM_RESULT sm_build(
-        sm_Runtime *Runtime_p, sm_SourceContext *Context_p
+        sm_Runtime *Runtime_p, SM_BYTE *name_p
     ); 
 
 /** @} */

@@ -35,6 +35,8 @@
         sm_FileArray FileArray; 
         sm_functionCallback_f functionCallback_f;
         sm_sourceContextCallback_f sourceContextCallback_f;
+        sm_sourceContextCallback_f beforeBuildCallback_f;
+        sm_sourceContextCallback_f afterBuildCallback_f;
     } sm_Runtime;
 
 /** @} */

@@ -61,6 +61,26 @@ SM_BEGIN()
 SM_SILENT_END()
 }
 
+void sm_setBeforeBuildCallback(
+    sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f)
+{
+SM_BEGIN()
+
+    Runtime_p->beforeBuildCallback_f = sourceContextCallback_f;
+
+SM_SILENT_END()
+}
+
+void sm_setAfterBuildCallback(
+    sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f)
+{
+SM_BEGIN()
+
+    Runtime_p->afterBuildCallback_f = sourceContextCallback_f;
+
+SM_SILENT_END()
+}
+
 sm_SourceContextArray *sm_getSourceContextArray(
     sm_Runtime *Runtime_p)
 {

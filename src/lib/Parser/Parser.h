@@ -30,16 +30,19 @@
         sm_Definition *Definitions_p;
     } sm_Block;
 
-    typedef struct sm_LongOption {
+    typedef struct sm_Option {
         SM_DEFINITION type;
+        SM_BOOL longOption;
+        int arguments;
+        SM_BYTE **arguments_pp;
         SM_BYTE *name_p;
         SM_BYTE *description_p;
         sm_Definition *Block_p;
-    } sm_LongOption;
+    } sm_Option;
 
     typedef union sm_Definition {
         SM_DEFINITION type;
-        sm_LongOption LongOption;
+        sm_Option Option;
         sm_Function Function;
         sm_Block Block;
     } sm_Definition;

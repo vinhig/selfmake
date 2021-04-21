@@ -12,6 +12,7 @@
 #include "Thread.h"
 #include "File.h"
 #include "Build.h"
+#include "Options.h"
 
 #include "../Parser/Functions.h"
 #include "../Parser/Variables.h"
@@ -32,41 +33,6 @@ sm_Runtime SM_DEFAULT_RUNTIME;
 
 // HELPER ==========================================================================================
 
-static sm_LongOption *sm_getLongOption(
-    sm_Parser *Parser_p, SM_BYTE *arg_p)
-{
-SM_BEGIN()
-
-    sm_LongOption *Option_p = NULL;
-
-    for (int d = 0; d < Parser_p->definitions; ++d) {
-        if (Parser_p->Definitions_p[d].type == SM_DEFINITION_LONG_OPTION) {
-            if (!strcmp(Parser_p->Definitions_p[d].LongOption.name_p, arg_p)) {
-                Option_p = &Parser_p->Definitions_p[d].LongOption;
-                break;
-            }
-        }
-    }
-
-SM_END(Option_p)
-}
-
-static SM_RESULT sm_executeLongOption(
-    sm_Runtime *Runtime_p, sm_LongOption *Option_p)
-{
-SM_BEGIN()
-
-    sm_operationf("--%s %s", Option_p->name_p, Option_p->description_p);
-
-    for (int d = 0; d < Option_p->Block_p->Block.definitions; ++d) {
-        if (Option_p->Block_p->Block.Definitions_p[d].type == SM_DEFINITION_FUNCTION) {
-            SM_CHECK(sm_executeFunction(Runtime_p, &Option_p->Block_p->Block.Definitions_p[d].Function))
-        }
-    }
-
-SM_DIAGNOSTIC_END(SM_SUCCESS)
-}
-
 SM_BYTE *sm_getSourceContextName(
     sm_Runtime *Runtime_p, sm_SourceContext *SourceContext_p)
 {
@@ -80,7 +46,7 @@ SM_BEGIN()
 
     int offset = 0;
     for (int i = 0; i < strlen(Prefix_p->values_pp[0]) && i < strlen(SourceContext_p->name_p); ++i) {
-        if (*Prefix_p->values_pp[i] != SourceContext_p->name_p[i]) {
+        if (Prefix_p->values_pp[0][i] != SourceContext_p->name_p[i]) {
             break;
         }
         offset++;
@@ -96,86 +62,55 @@ static SM_RESULT sm_parseArguments(
 {
 SM_BEGIN()
 
-    SM_BOOL negate = SM_FALSE, build = SM_FALSE;
-
-    for (int i = 1; i < argc; ++i) 
-    {
-        if (argv_pp[i][0] == '-' && argv_pp[i][1] == '-')
-        {
-            sm_LongOption *Option_p = NULL;
-
-            for (int j = 0; j < Runtime_p->ParserArray.length; ++j) {
-                sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[j];
-                Option_p = sm_getLongOption(Parser_p, argv_pp[i] + 2);
-                if (Option_p) {break;}
-            }
-
-            if (!Option_p) {SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)}
-            SM_CHECK(sm_executeLongOption(Runtime_p, Option_p))
-
-            continue;
-        }
-
-        if (argv_pp[i][0] == '-' && argv_pp[i][1] != '-')
-        {
-            negate = SM_FALSE, build = SM_FALSE;
-
-            if (strstr(argv_pp[i], "n")) {
-                negate = SM_TRUE;
-                if (negate) {
-                    for (int j = 0; j < Runtime_p->SourceContextArray.length; ++j) {
-                        sm_SourceContext *Context_p = &Runtime_p->SourceContextArray.SourceContexts_p[j];
-                        Context_p->build = SM_TRUE;
-                    }
-                }
-            }
-            if (strstr(argv_pp[i], "b")) {
-                build = SM_TRUE;
-            }
-//            if (strstr(argv_pp[i], "i")) {
-//                if (libs) {INSTALL_ALL_LIBRARIES = SM_TRUE;}
-//                if (bins) {INSTALL_ALL_BINARIES = SM_TRUE;}
-//                *build_p = SM_TRUE; 
-//            }
-            if (!strstr(argv_pp[i], "b")) {
-                sm_noticef("Invalid option \"%s\"", argv_pp[i]);
-                SM_END(SM_ERROR_INVALID_OPTION)
-            }
-            continue;
-        }
-
-        if (build)
-        {
-            SM_BOOL valid = SM_FALSE;
-            for (int j = 0; j < Runtime_p->SourceContextArray.length; ++j) {
-                if (!strcmp(argv_pp[i], sm_getSourceContextName(Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[j]))) {
-                    valid = SM_TRUE;
-                    break;
-                }
-            }
-            if (!valid) {
-                sm_noticef("Invalid option \"%s\"", argv_pp[i]);
-                SM_END(SM_ERROR_INVALID_OPTION)
-            }
-        }
-        if (build && !negate) {
-            for (int j = 0; j < Runtime_p->SourceContextArray.length; ++j) {
-                sm_SourceContext *Context_p = &Runtime_p->SourceContextArray.SourceContexts_p[j];
-                Context_p->build = !strcmp(argv_pp[i], sm_getSourceContextName(Runtime_p, Context_p)) || Context_p->build;
-            }
-        }
-        if (build && negate) {
-            for (int j = 0; j < Runtime_p->SourceContextArray.length; ++j) {
-                sm_SourceContext *Context_p = &Runtime_p->SourceContextArray.SourceContexts_p[j];
-                Context_p->build = strcmp(argv_pp[i], sm_getSourceContextName(Runtime_p, Context_p)) && Context_p->build;
-            }
-        }
+    for (int i = 1; i < argc; ++i) {
+        int advance = 0;
+        SM_CHECK(sm_parseOption(Runtime_p, argc - i, &argv_pp[i], &advance))
+        i += advance - 1;
     }
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }
 
 // RUN =============================================================================================
+
+SM_BYTE **sm_processArguments(
+    sm_VariableArray *Variables_p, SM_BYTE **args_pp, int args, int *processedArgCount_p)
+{
+SM_BEGIN()
+
+#include SM_CUSTOM_CHECK
+
+    int processedArgCount = 0;
+    SM_BYTE **processedArgs_pp = malloc(sizeof(SM_BYTE*)); 
+    SM_CHECK_NULL(NULL, processedArgs_pp)    
+
+    for (int i = 0; i < args; ++i) 
+    {
+        sm_Variable *Variable_p = sm_getVariable(Variables_p, args_pp[i]);
+        if (Variable_p) {
+            for (int j = 0; j < Variable_p->valueCount; ++j) {
+                processedArgs_pp[processedArgCount] = malloc(strlen(Variable_p->values_pp[j]) + 1);
+                SM_CHECK_NULL(NULL, processedArgs_pp[processedArgCount])
+                strcpy(processedArgs_pp[processedArgCount++], Variable_p->values_pp[j]);
+                processedArgs_pp = realloc(processedArgs_pp, sizeof(SM_BYTE*) * (processedArgCount + 1));
+                SM_CHECK_NULL(NULL, processedArgs_pp)
+            } 
+        }
+        else {
+            processedArgs_pp[processedArgCount] = malloc(strlen(args_pp[i]) + 1);
+            SM_CHECK_NULL(NULL, processedArgs_pp[processedArgCount])
+            strcpy(processedArgs_pp[processedArgCount++], args_pp[i]);
+            processedArgs_pp = realloc(processedArgs_pp, sizeof(SM_BYTE*) * (processedArgCount + 1));
+            SM_CHECK_NULL(NULL, processedArgs_pp)
+        }
+    }
+
+#include SM_DEFAULT_CHECK
+
+    *processedArgCount_p = processedArgCount;
+
+SM_END(processedArgs_pp)
+}
 
 SM_RESULT sm_executeRuntime(
     sm_Runtime *Runtime_p, SM_BYTE **args_pp, int args)
@@ -190,17 +125,22 @@ SM_BEGIN()
         SM_CHECK(sm_executeFunctions(
             Runtime_p, &Runtime_p->ParserArray.Parsers_p[Runtime_p->ParserArray.length - 1]
         ))
-    }
-
-    SM_RESULT result = sm_parseArguments(Runtime_p, args, args_pp);
-
-    if (result == SM_SUCCESS) {
-        for (int i = 0; i < Runtime_p->SourceContextArray.length; ++i) {
-            if (Runtime_p->SourceContextArray.SourceContexts_p[i].build) {
-                SM_CHECK(sm_build(Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[i]))
-            }
+        sm_Variable *All_p = sm_getVariable(&Runtime_p->VariableArray, "ALL");
+        for (int j = 0; All_p && j < All_p->valueCount; ++j) {
+            SM_CHECK(sm_addBuildOption(Runtime_p, All_p->values_pp[j]))
         }
     }
+    
+    int processedArgs = 0;
+    SM_BYTE **processedArgs_pp = sm_processArguments(&Runtime_p->VariableArray, args_pp, args, &processedArgs);
+    SM_CHECK_NULL(processedArgs_pp)
+
+    SM_RESULT result = sm_parseArguments(Runtime_p, processedArgs, processedArgs_pp);
+
+    for (int i = 0; i < processedArgs; ++i) {
+        free(processedArgs_pp[i]);
+    }
+    free(processedArgs_pp);
 
     SM_CHECK(sm_exitMessage(result))
 
@@ -226,6 +166,8 @@ SM_BEGIN()
     Runtime_p->quiet = SM_FALSE;
     Runtime_p->functionCallback_f = NULL;
     Runtime_p->sourceContextCallback_f = NULL;
+    Runtime_p->beforeBuildCallback_f = NULL;
+    Runtime_p->afterBuildCallback_f = NULL;
 
     sm_initFileArray(&Runtime_p->FileArray);
     sm_initParserArray(&Runtime_p->ParserArray);

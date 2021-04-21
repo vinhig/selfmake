@@ -52,6 +52,14 @@
         sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f
     );
 
+    void sm_setBeforeBuildCallback(
+        sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f
+    );
+
+    void sm_setAfterBuildCallback(
+        sm_Runtime *Runtime_p, sm_sourceContextCallback_f sourceContextCallback_f
+    );
+
     sm_SourceContextArray *sm_getSourceContextArray(
         sm_Runtime *Runtime_p
     );

@@ -17,6 +17,7 @@ $DIR/src/lib/Core/Thread.c \
 $DIR/src/lib/Core/File.c \
 $DIR/src/lib/Core/Configure.c \
 $DIR/src/lib/Core/Build.c \
+$DIR/src/lib/Core/Options.c \
 $DIR/src/lib/Parser/Tokenizer.c \
 $DIR/src/lib/Parser/Parser.c \
 $DIR/src/lib/Parser/Variables.c \
@@ -30,7 +31,7 @@ $DIR/src/bin/smmake/Main.c \
 $DIR/src/bin/smmake/Version.c \
 $DIR/src/bin/smmake/Documents.c \
 
-/$DIR/build/smmake -bn
+/$DIR/build/smmake -b selfmake 
 
 if [ $? = 0 ]; then
     echo
@@ -39,3 +40,4 @@ else
     echo
     echo -e "BUILD \e[1;31mFAILURE\e[0m"
 fi
+

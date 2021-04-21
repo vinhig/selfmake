@@ -11,6 +11,7 @@
 #include "Functions.h"
 #include "Variables.h"
 
+#include "../Core/Build.h"
 #include "../Core/Utils.h"
 #include "../UI/Message.h"
 #include "../Common/Macros/Macros.h"
@@ -128,13 +129,29 @@ SM_BEGIN()
     memcpy(arguments_pp, Function_p->arguments_pp, sizeof(SM_BYTE*) * Function_p->arguments);
 
     for (int i = 0; i < Function_p->arguments; ++i) {
-        Function_p->arguments_pp[i] = sm_replaceVariables(&Runtime_p->VariableArray, arguments_pp[i]);
+        Function_p->arguments_pp[i] = sm_substituteVariables(&Runtime_p->VariableArray, arguments_pp[i]);
         SM_CHECK_NULL(Function_p->arguments_pp[i])
     }
     SM_RESULT result = SM_SUCCESS;
 
-    if (sm_caseInsensitiveMatch(Function_p->name_p, "shared")) {
-        result = sm_addSourceContext(&Runtime_p->SourceContextArray, Function_p, SM_SOURCE_CONTEXT_SHARED_LIBRARY);
+    if (sm_caseInsensitiveMatch(Function_p->name_p, "lib")) {
+        if (!strcmp(Function_p->arguments_pp[0], "SHARED")) {
+            result = sm_addSourceContext(Runtime_p, Function_p, SM_SOURCE_CONTEXT_SHARED_LIBRARY, 1);
+        }
+        else if (!strcmp(Function_p->arguments_pp[0], "STATIC")) {
+            result = sm_addSourceContext(Runtime_p, Function_p, SM_SOURCE_CONTEXT_STATIC_LIBRARY, 1);
+        }
+        else {
+            result = sm_addSourceContext(Runtime_p, Function_p, SM_SOURCE_CONTEXT_SHARED_LIBRARY, 0);
+        }
+        if (!result && Runtime_p->sourceContextCallback_f) {
+            result = Runtime_p->sourceContextCallback_f(
+                Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[Runtime_p->SourceContextArray.length - 1]
+            );
+        }
+    }
+    else if (sm_caseInsensitiveMatch(Function_p->name_p, "bin")) {
+        result = sm_addSourceContext(Runtime_p, Function_p, SM_SOURCE_CONTEXT_BINARY, 0);
         if (!result && Runtime_p->sourceContextCallback_f) {
             result = Runtime_p->sourceContextCallback_f(
                 Runtime_p, &Runtime_p->SourceContextArray.SourceContexts_p[Runtime_p->SourceContextArray.length - 1]
@@ -152,6 +169,9 @@ SM_BEGIN()
     }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "copy")) {
         result = sm_executeCopyFunction(Runtime_p, Function_p);
+    }
+    else if (sm_caseInsensitiveMatch(Function_p->name_p, "build")) {
+        result = sm_build(Runtime_p, Function_p->arguments_pp[0]);
     }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "chdir")) {
         result = sm_executeChdirFunction(Runtime_p, Function_p);

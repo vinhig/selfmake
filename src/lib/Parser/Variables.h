@@ -43,11 +43,15 @@
         sm_VariableArray *Array_p, SM_BYTE *name_p
     );
 
+    SM_RESULT sm_appendToVariable(
+        sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE **values_pp, int valueCount
+    );
+
     SM_RESULT sm_updateVariable(
         sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE **values_pp, int valueCount
     );
 
-    SM_BYTE *sm_replaceVariables(
+    SM_BYTE *sm_substituteVariables(
         sm_VariableArray *Array_p, SM_BYTE *string_p
     );
 

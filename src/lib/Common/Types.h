@@ -57,7 +57,7 @@
 
     typedef enum SM_DEFINITION {
         SM_DEFINITION_UNDEFINED,
-        SM_DEFINITION_LONG_OPTION,
+        SM_DEFINITION_OPTION,
         SM_DEFINITION_FUNCTION,
         SM_DEFINITION_BLOCK,
     } SM_DEFINITION;
@@ -65,6 +65,7 @@
     typedef enum SM_SOURCE_CONTEXT {
         SM_SOURCE_CONTEXT_SHARED_LIBRARY,
         SM_SOURCE_CONTEXT_STATIC_LIBRARY,
+        SM_SOURCE_CONTEXT_BINARY,
     } SM_SOURCE_CONTEXT;
 
 /** @} */
@@ -87,8 +88,6 @@
         SM_BYTE *name_p;
         SM_BYTE *compileArgs_p;
         SM_BYTE *linkArgs_p;
-        SM_BOOL build;
-        SM_BOOL install;
         long api, major, minor, patch;
         long apiDate_p[3], majorDate_p[3], minorDate_p[3], patchDate_p[3];
     } sm_SourceContext;

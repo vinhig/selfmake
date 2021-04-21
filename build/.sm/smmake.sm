@@ -2,12 +2,14 @@
 
 set(PROJ_DIR,"${WRK_DIR}")
 set(LIB_DEST,"${WRK_DIR}/lib/")
-set(PROJ_STAGE,"experimental development")
+set(PROJ_STAGE,"design phase")
 
 // SOURCE ==========================================================================================
 
-shared(selfmake,"${WRK_DIR}/src/lib/")
+lib(selfmake,"${WRK_DIR}/src/lib/")
+
 link(selfmake,"-lpthread -ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
+compile(selfmake,"-std=gnu99")
 
 source(
     selfmake
@@ -18,6 +20,7 @@ source(
     "Core/File.c"
     "Core/Configure.c"
     "Core/Build.c"
+    "Core/Options.c"
     "Parser/Tokenizer.c"
     "Parser/Parser.c"
     "Parser/Variables.c"
@@ -29,21 +32,24 @@ source(
 
 // DOCS ============================================================================================
 
---clndocs "[dev] clone docs"
+"[dev] clone docs"
+-d cln
 {
     chdir("external")
-    system("git clone https://github.com/netzhautproject/selfmake_docs.git")
+    system("git clone https://github.com/netzwerkz/selfmake_docs.git")
     chdir()
 }
 
---plldocs "[dev] pull docs"
+"[dev] pull docs"
+-d pll
 {
     chdir("external/selfmake_docs")
     system("git pull origin HEAD")
     chdir()
 }
 
---gendocs "[dev] generate docs"
+"[dev] generate docs"
+-d gen
 {
     generateFooter()
     chdir("external/selfmake_docs/docs/Dev")
@@ -56,7 +62,8 @@ source(
     chdir()
 }
 
---pshdocs "[dev] push docs"
+"[dev] push docs"
+-d psh
 {
     chdir("external/selfmake_docs")
     system("git add .")
@@ -67,7 +74,8 @@ source(
 
 // PUSH ============================================================================================
 
---psh "[dev] push new version"
+"[dev] push new version"
+--psh
 {
     chdir()
     system("git add .")

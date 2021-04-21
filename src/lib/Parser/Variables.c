@@ -78,6 +78,35 @@ SM_BEGIN()
 SM_END(Variable_p)
 }
 
+SM_RESULT sm_appendToVariable(
+    sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE **values_pp, int valueCount)
+{
+SM_BEGIN()
+
+#include SM_DEFAULT_CHECK
+
+    sm_Variable *Variable_p = sm_getVariable(Array_p, variable_p);
+    if (!Variable_p) {
+        Variable_p = sm_createVariable(Array_p, variable_p);
+    }
+    SM_CHECK_NULL(Variable_p)
+
+    Variable_p->values_pp = realloc(Variable_p->values_pp, sizeof(SM_BYTE*) * (Variable_p->valueCount + valueCount));
+    SM_CHECK_NULL(Variable_p->values_pp)
+
+    for (int i = Variable_p->valueCount, j = 0; i < valueCount + Variable_p->valueCount; ++i, ++j) {
+        Variable_p->values_pp[i] = malloc(strlen(values_pp[j]) + 1);
+        SM_CHECK_NULL(Variable_p->values_pp[i])
+        sprintf(Variable_p->values_pp[i], values_pp[j]);
+    }
+
+    Variable_p->valueCount += valueCount;
+
+#include SM_CUSTOM_CHECK
+
+SM_END(SM_SUCCESS)
+}
+
 SM_RESULT sm_updateVariable(
     sm_VariableArray *Array_p, SM_BYTE *variable_p, SM_BYTE **values_pp, int valueCount)
 {
@@ -120,7 +149,7 @@ SM_END(SM_SUCCESS)
 
 // REPLACE =========================================================================================
 
-static SM_BYTE *sm_replaceVariableCallsInString(
+static SM_BYTE *sm_substituteVariableCallsInString(
     sm_VariableArray *Array_p, SM_BYTE *string_p)
 {
 SM_BEGIN()
@@ -157,13 +186,13 @@ SM_BEGIN()
         sprintf(newString_p + strlen(newString_p), end_p + 1); 
 
         free(string_p);
-        SM_END(sm_replaceVariableCallsInString(Array_p, newString_p))
+        SM_END(sm_substituteVariableCallsInString(Array_p, newString_p))
     }
 
 SM_END(string_p)
 }
 
-SM_BYTE *sm_replaceVariables(
+SM_BYTE *sm_substituteVariables(
     sm_VariableArray *Array_p, SM_BYTE *string_p)
 {
 SM_BEGIN()
@@ -173,6 +202,6 @@ SM_BEGIN()
 
     sprintf(newString_p, string_p);
 
-SM_END(sm_replaceVariableCallsInString(Array_p, newString_p)) 
+SM_END(sm_substituteVariableCallsInString(Array_p, newString_p)) 
 }
 

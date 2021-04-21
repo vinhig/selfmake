@@ -10,6 +10,7 @@
 
 #include "SourceContexts.h"
 
+#include "../Core/Runtime.h"
 #include "../Common/Macros/Macros.h"
 #include SM_FLOW
 #include SM_DEFAULT_CHECK
@@ -45,8 +46,6 @@ SM_BEGIN()
     SourceContext.path_p = NULL;
     SourceContext.compileArgs_p = NULL;
     SourceContext.linkArgs_p = NULL;
-    SourceContext.build = SM_FALSE;
-    SourceContext.install = SM_FALSE;
     SourceContext.major = 0;
     SourceContext.minor = 0;
     SourceContext.patch = 0;
@@ -71,9 +70,11 @@ SM_SILENT_END()
 // ADD =============================================================================================
 
 SM_RESULT sm_addSourceContext(
-    sm_SourceContextArray *Array_p, sm_Function *Function_p, SM_SOURCE_CONTEXT type)
+    sm_Runtime *Runtime_p, sm_Function *Function_p, SM_SOURCE_CONTEXT type, int offset)
 {
 SM_BEGIN()
+
+    sm_SourceContextArray *Array_p = &Runtime_p->SourceContextArray;
 
     if (Function_p->arguments < 1) {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
 
@@ -89,26 +90,28 @@ SM_BEGIN()
     sm_SourceContext *SourceContext_p = &Array_p->SourceContexts_p[Array_p->length];
     *SourceContext_p = sm_initSourceContext(type);
 
-    SourceContext_p->name_p = malloc(strlen(Function_p->arguments_pp[0]) + 1);
+    int index = offset;
+
+    SourceContext_p->name_p = malloc(strlen(Function_p->arguments_pp[index]) + 1);
     SM_CHECK_NULL(SourceContext_p->name_p)
-    sprintf(SourceContext_p->name_p, Function_p->arguments_pp[0]);
+    strcpy(SourceContext_p->name_p, Function_p->arguments_pp[index++]);
 
-    if (Function_p->arguments > 1) {
-        SourceContext_p->path_p = malloc(strlen(Function_p->arguments_pp[1]) + 1);
+    if (Function_p->arguments > index) {
+        SourceContext_p->path_p = malloc(strlen(Function_p->arguments_pp[index]) + 1);
         SM_CHECK_NULL(SourceContext_p->path_p)
-        sprintf(SourceContext_p->path_p, Function_p->arguments_pp[1]);
+        strcpy(SourceContext_p->path_p, Function_p->arguments_pp[index++]);
     }
 
-    if (Function_p->arguments > 2) {
-        SourceContext_p->major = strtol(Function_p->arguments_pp[2], NULL, 10);
+    if (Function_p->arguments > index) {
+        SourceContext_p->major = strtol(Function_p->arguments_pp[index++], NULL, 10);
     }
 
-    if (Function_p->arguments > 3) {
-        SourceContext_p->minor = strtol(Function_p->arguments_pp[3], NULL, 10);
+    if (Function_p->arguments > index) {
+        SourceContext_p->minor = strtol(Function_p->arguments_pp[index++], NULL, 10);
     }
 
-    if (Function_p->arguments > 4) {
-        SourceContext_p->patch = strtol(Function_p->arguments_pp[4], NULL, 10);
+    if (Function_p->arguments > index) {
+        SourceContext_p->patch = strtol(Function_p->arguments_pp[index++], NULL, 10);
     }
 
     if (strlen(SourceContext_p->name_p) > Array_p->maxNameLength) {
@@ -116,6 +119,15 @@ SM_BEGIN()
     }
 
     Array_p->length++;
+
+    SM_CHECK(sm_appendToVariable(&Runtime_p->VariableArray, "ALL", &Function_p->arguments_pp[offset], 1))
+
+    if (type == SM_SOURCE_CONTEXT_BINARY) {
+        SM_CHECK(sm_appendToVariable(&Runtime_p->VariableArray, "BINS", &Function_p->arguments_pp[offset], 1))
+    }
+    else {
+        SM_CHECK(sm_appendToVariable(&Runtime_p->VariableArray, "LIBS", &Function_p->arguments_pp[offset], 1))
+    }
 
 SM_END(SM_SUCCESS)
 }
