@@ -57,14 +57,20 @@ SM_BEGIN()
         }
     }
 
-    int commandLength = strlen(sources_p) + strlen(SourceContext_p->compileArgs_p) + strlen(SourceContext_p->linkArgs_p) + strlen(binPath_p) + 128;
+    int compileArgsLength = SourceContext_p->compileArgs_p ? strlen(SourceContext_p->compileArgs_p) : 0;
+    int linkArgsLength = SourceContext_p->linkArgs_p ? strlen(SourceContext_p->linkArgs_p) : 0;
+    int commandLength = strlen(sources_p) + compileArgsLength + linkArgsLength + strlen(binPath_p) + 128;
     SM_BYTE *command_p = malloc(commandLength);
     SM_CHECK_NULL(command_p)
     memset(command_p, 0, commandLength);
 
-    // set -no-pie because of https://stackoverflow.com/questions/41398444/gcc-creates-mime-type-application-x-sharedlib-instead-of-application-x-applicati
-    sprintf(command_p, "gcc %s -o%s -no-pie %s %s", SourceContext_p->compileArgs_p, binPath_p, SourceContext_p->linkArgs_p, sources_p);
+    SM_BYTE empty = 0;
+    SM_BYTE *linkArgs_p = SourceContext_p->linkArgs_p ? SourceContext_p->linkArgs_p : &empty;
+    SM_BYTE *compileArgs_p = SourceContext_p->compileArgs_p ? SourceContext_p->compileArgs_p : &empty;
 
+
+    // set -no-pie because of https://stackoverflow.com/questions/41398444/gcc-creates-mime-type-application-x-sharedlib-instead-of-application-x-applicati
+    sprintf(command_p, "gcc %s -o%s -no-pie %s %s", compileArgs_p, binPath_p, linkArgs_p, sources_p);
     sm_messagef(command_p);
 
     int status = system(command_p);
@@ -86,8 +92,8 @@ static SM_RESULT sm_createSharedLibraryUsingGCC(
 SM_BEGIN()
 
     static SM_BYTE command_p[16384] = {'\0'};
-    sprintf(command_p, "gcc -shared %s %s %s -o %s", objects_p, compile_p, link_p, out_p);
 
+    sprintf(command_p, "gcc -shared %s %s %s -o %s", objects_p, compile_p, link_p, out_p);
     sm_messagef(command_p);
 
     int status = system(command_p);
@@ -103,7 +109,8 @@ SM_BEGIN()
 
     SM_BYTE empty = 0;
     SM_BYTE *libName_p = Context_p->name_p;
-    SM_BYTE *extra_p = Context_p->linkArgs_p ? Context_p->linkArgs_p : &empty;
+    SM_BYTE *linkArgs_p = Context_p->linkArgs_p ? Context_p->linkArgs_p : &empty;
+    SM_BYTE *compileArgs_p = Context_p->compileArgs_p ? Context_p->compileArgs_p : &empty;
 
     int major = Context_p->major; 
     int minor = Context_p->minor; 
@@ -140,7 +147,7 @@ SM_BEGIN()
     SM_BYTE symPath2_p[256] = {'\0'};
     sprintf(symPath2_p, "%s/lib%s.so", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p);
   
-    SM_CHECK(sm_createSharedLibraryUsingGCC(objects_p, libPath_p, Context_p->compileArgs_p, extra_p))
+    SM_CHECK(sm_createSharedLibraryUsingGCC(objects_p, libPath_p, compileArgs_p, linkArgs_p))
 
     memset(libPath_p, 0, 256); 
     sprintf(libPath_p, "lib%s.so.%d.%d.%d", libName_p, major, minor, patch);
@@ -185,7 +192,7 @@ SM_SILENT_END()
 }
 
 static SM_RESULT sm_createPICObjectFileUsingGCC(
-    const SM_BYTE *in_p, const SM_BYTE *out_p, SM_BYTE *extra_p)
+    const SM_BYTE *in_p, const SM_BYTE *out_p, SM_BYTE *compileArgs_p)
 {
 SM_BEGIN()
 
@@ -194,7 +201,7 @@ SM_BEGIN()
 
     SM_BYTE command_p[1024] = {'\0'};
 
-    if (extra_p != NULL) {sprintf(command_p, "gcc -fPIC %s -c %s -o %s", extra_p, in_p, out_p);}
+    if (compileArgs_p != NULL) {sprintf(command_p, "gcc -fPIC %s -c %s -o %s", compileArgs_p, in_p, out_p);}
     else {sprintf(command_p, "gcc -fPIC -c %s -o %s", in_p, out_p);}
 
     sm_messagef(command_p);

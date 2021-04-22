@@ -36,14 +36,14 @@ source(
 -d cln
 {
     chdir("external")
-    system("git clone https://github.com/netzwerkz/selfmake_docs.git")
+    system("git clone https://github.com/netzwerkz/selfmake.netzwerkz.org.git")
     chdir()
 }
 
 "[dev] pull docs"
 -d pll
 {
-    chdir("external/selfmake_docs")
+    chdir("external/selfmake.netzwerkz.org")
     system("git pull origin HEAD")
     chdir()
 }
@@ -52,10 +52,10 @@ source(
 -d gen
 {
     generateFooter()
-    chdir("external/selfmake_docs/docs/Dev")
+    chdir("external/selfmake.netzwerkz.org/docs/Dev")
     system("doxygen Doxyfile")
     chdir()
-    chdir("external/selfmake_docs/docs/API")
+    chdir("external/selfmake.netzwerkz.org/docs/API")
     system("doxygen Doxyfile")
     chdir()
     generateHomepage()
@@ -65,7 +65,7 @@ source(
 "[dev] push docs"
 -d psh
 {
-    chdir("external/selfmake_docs")
+    chdir("external/selfmake.netzwerkz.org")
     system("git add .")
     system("git commit -m \"${PROJ_VER}\"")
     system("git push origin HEAD")
@@ -88,6 +88,7 @@ source(
 
 set(
     NEWS
+    "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./Dev/HTML/group__selfmakeChangelog.html#v0.1.0\">v0.1.0</a></p>"
     "<p><b>2021-04-17</b><br>hello world!</p>"
 )
 

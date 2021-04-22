@@ -121,7 +121,7 @@ SM_BEGIN()
         SM_CHECK(sm_appendParser(
             &Runtime_p->ParserArray, &Runtime_p->FileArray.Files_p[i], Runtime_p->showParseTree
         ))
-        sm_operationf("EXECUTE_FUNCTIONS");
+        sm_operationf("Execute Functions");
         SM_CHECK(sm_executeFunctions(
             Runtime_p, &Runtime_p->ParserArray.Parsers_p[Runtime_p->ParserArray.length - 1]
         ))
@@ -180,6 +180,7 @@ SM_BEGIN()
     sm_updateVariable(&Runtime_p->VariableArray, "WRK_DIR", &wrk_p, 1);
     sm_updateVariable(&Runtime_p->VariableArray, "PROJ_DIR", &wrk_p, 1);
     sm_updateVariable(&Runtime_p->VariableArray, "LIB_DEST", &wrk_p, 1);
+    sm_updateVariable(&Runtime_p->VariableArray, "BIN_DEST", &wrk_p, 1);
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }

@@ -268,7 +268,7 @@ static void sm_showParseTree(
 {
 SM_BEGIN()
 
-    sm_operationf("SHOW_PARSE_TREE");
+    sm_operationf("Show Parse-Tree");
 
     for (int i = 0; i < Parser_p->definitions; ++i) {
         sm_showParserDefinition(&Parser_p->Definitions_p[i], 0);

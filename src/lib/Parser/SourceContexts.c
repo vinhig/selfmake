@@ -49,6 +49,9 @@ SM_BEGIN()
     SourceContext.major = 0;
     SourceContext.minor = 0;
     SourceContext.patch = 0;
+    memset(SourceContext.majorDate_p, 0, sizeof(long) * 3);
+    memset(SourceContext.minorDate_p, 0, sizeof(long) * 3);
+    memset(SourceContext.patchDate_p, 0, sizeof(long) * 3);
 
 SM_END(SourceContext)
 }
@@ -127,6 +130,19 @@ SM_BEGIN()
     }
     else {
         SM_CHECK(sm_appendToVariable(&Runtime_p->VariableArray, "LIBS", &Function_p->arguments_pp[offset], 1))
+    }
+
+    switch (type)
+    {
+        case SM_SOURCE_CONTEXT_BINARY :
+            sm_messagef("Add binary [%s]", SourceContext_p->name_p);
+            break;
+        case SM_SOURCE_CONTEXT_SHARED_LIBRARY :
+            sm_messagef("Add shared library [%s]", SourceContext_p->name_p);
+            break;
+        case SM_SOURCE_CONTEXT_STATIC_LIBRARY :
+            sm_messagef("Add static library [%s]", SourceContext_p->name_p);
+            break;
     }
 
 SM_END(SM_SUCCESS)

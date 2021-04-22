@@ -1,0 +1,7 @@
+bin(helloworld,".")
+source("helloworld.c")
+
+"execute helloworld"
+--exec {
+  system("./helloworld")
+}
