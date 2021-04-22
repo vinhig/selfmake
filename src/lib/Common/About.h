@@ -42,7 +42,7 @@
  */
 
     /**
-     * API version history.
+     * API version.
      *
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
@@ -50,7 +50,7 @@
     #define SM_API_VERSION 0
 
     /**
-     * Major version history.
+     * Major version.
      *
      * 2021-04-21 | v0.1.0.0 <a id="v0.1.0.0"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Add first iteration of binary building, mostly implemented in sm_build().
@@ -64,10 +64,10 @@
     #define SM_MAJOR_VERSION 1
 
     /**
-     * Minor version history.
+     * Minor version.
      *
      * 2021-04-22 | v0.1.1.0 <a id="v0.1.1.0"></a>
-     * - [Dajo Frey](https://github.com/DajoFrey): Add custom output path parameter for binaries, stored in \ref sm_SourceContext.outputPath_p
+     * - [Dajo Frey](https://github.com/DajoFrey): Add custom output path parameter for source contexts, stored in \ref sm_SourceContext.outputPath_p
      *
      * 2021-04-17 | v0.0.1.0 <a id="v0.0.1.0"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Fix invalid memory writes in sm_replaceVariables().
@@ -81,12 +81,15 @@
     #define SM_MINOR_VERSION 1
 
     /**
-     * Patch version history.
+     * Patch version.
+     *
+     * 2021-04-22 | v0.1.1.1 <a id="v0.1.1.1"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Fix missing initialization of \ref sm_SourceContext.api and \ref sm_SourceContext.apiDate_p.
      *
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 0
+    #define SM_PATCH_VERSION 1
 
 /** @} */
 

@@ -46,10 +46,12 @@ SM_BEGIN()
     SourceContext.path_p = NULL;
     SourceContext.compileArgs_p = NULL;
     SourceContext.linkArgs_p = NULL;
+    SourceContext.api = 0;
     SourceContext.major = 0;
     SourceContext.minor = 0;
     SourceContext.patch = 0;
     SourceContext.outputPath_p = NULL;
+    memset(SourceContext.apiDate_p, 0, sizeof(long) * 3);
     memset(SourceContext.majorDate_p, 0, sizeof(long) * 3);
     memset(SourceContext.minorDate_p, 0, sizeof(long) * 3);
     memset(SourceContext.patchDate_p, 0, sizeof(long) * 3);
