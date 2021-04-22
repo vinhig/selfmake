@@ -49,6 +49,7 @@ SM_BEGIN()
     SourceContext.major = 0;
     SourceContext.minor = 0;
     SourceContext.patch = 0;
+    SourceContext.outputPath_p = NULL;
     memset(SourceContext.majorDate_p, 0, sizeof(long) * 3);
     memset(SourceContext.minorDate_p, 0, sizeof(long) * 3);
     memset(SourceContext.patchDate_p, 0, sizeof(long) * 3);
@@ -103,6 +104,12 @@ SM_BEGIN()
         SourceContext_p->path_p = malloc(strlen(Function_p->arguments_pp[index]) + 1);
         SM_CHECK_NULL(SourceContext_p->path_p)
         strcpy(SourceContext_p->path_p, Function_p->arguments_pp[index++]);
+    }
+
+    if (Function_p->arguments > index) {
+        SourceContext_p->outputPath_p = malloc(strlen(Function_p->arguments_pp[index]) + 1);
+        SM_CHECK_NULL(SourceContext_p->outputPath_p)
+        strcpy(SourceContext_p->outputPath_p, Function_p->arguments_pp[index++]);
     }
 
     if (Function_p->arguments > index) {

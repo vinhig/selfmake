@@ -25,12 +25,13 @@ static SM_RESULT sourceContextCallback(
 {
     if (!strcmp(SourceContext_p->name_p, "selfmake")) 
     {
-        int versionNums_p[3];
-        long versionDates_pp[3][3];
+        int versionNums_p[4];
+        long versionDates_pp[4][3];
         getVersionData(versionNums_p, versionDates_pp);
-        SourceContext_p->major = versionNums_p[0];
-        SourceContext_p->minor = versionNums_p[1];
-        SourceContext_p->patch = versionNums_p[2];
+        SourceContext_p->api   = versionNums_p[0];
+        SourceContext_p->major = versionNums_p[1];
+        SourceContext_p->minor = versionNums_p[2];
+        SourceContext_p->patch = versionNums_p[3];
     }
 
     return SM_SUCCESS;

@@ -36,6 +36,9 @@ SM_BEGIN()
 
     SM_BYTE binPath_p[256] = {'\0'};
     sprintf(binPath_p, "%s/%s", sm_getVariable(&Runtime_p->VariableArray, "BIN_DEST")->values_pp[0], SourceContext_p->name_p);
+    if (SourceContext_p->outputPath_p) {
+        sprintf(binPath_p, "%s/%s", SourceContext_p->outputPath_p, SourceContext_p->name_p);
+    }
 
     int length = 0;
     for (int i = 0; i < Runtime_p->SourceArray.length; ++i) {
@@ -67,7 +70,6 @@ SM_BEGIN()
     SM_BYTE empty = 0;
     SM_BYTE *linkArgs_p = SourceContext_p->linkArgs_p ? SourceContext_p->linkArgs_p : &empty;
     SM_BYTE *compileArgs_p = SourceContext_p->compileArgs_p ? SourceContext_p->compileArgs_p : &empty;
-
 
     // set -no-pie because of https://stackoverflow.com/questions/41398444/gcc-creates-mime-type-application-x-sharedlib-instead-of-application-x-applicati
     sprintf(command_p, "gcc %s -o%s -no-pie %s %s", compileArgs_p, binPath_p, linkArgs_p, sources_p);
@@ -140,12 +142,15 @@ SM_BEGIN()
     } 
     else {SM_DIAGNOSTIC_END(SM_ERROR_CANT_OPEN_DIR)}
 
+    SM_BYTE *dest_p = sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0];
+    if (Context_p->outputPath_p) {dest_p = Context_p->outputPath_p;}
+
     SM_BYTE libPath_p[256] = {'\0'};
-    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p, major, minor, patch);
+    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d", dest_p, libName_p, major, minor, patch);
     SM_BYTE symPath1_p[256] = {'\0'};
-    sprintf(symPath1_p, "%s/lib%s.so.%d", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p, major);
+    sprintf(symPath1_p, "%s/lib%s.so.%d", dest_p, libName_p, major);
     SM_BYTE symPath2_p[256] = {'\0'};
-    sprintf(symPath2_p, "%s/lib%s.so", sm_getVariable(&Runtime_p->VariableArray, "LIB_DEST")->values_pp[0], libName_p);
+    sprintf(symPath2_p, "%s/lib%s.so", dest_p, libName_p);
   
     SM_CHECK(sm_createSharedLibraryUsingGCC(objects_p, libPath_p, compileArgs_p, linkArgs_p))
 

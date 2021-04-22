@@ -88,6 +88,7 @@
         SM_BYTE *name_p;
         SM_BYTE *compileArgs_p;
         SM_BYTE *linkArgs_p;
+        SM_BYTE *outputPath_p;
         long api, major, minor, patch;
         long apiDate_p[3], majorDate_p[3], minorDate_p[3], patchDate_p[3];
     } sm_SourceContext;

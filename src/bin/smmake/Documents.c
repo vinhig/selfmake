@@ -93,18 +93,19 @@ static SM_BYTE *insertChangelogs(
 
     sprintf(new_p, before_p);
         
-    int versionNums_p[3];
-    long versionDates_pp[3][3];
+    int versionNums_p[4];
+    long versionDates_pp[4][3];
     getVersionData(versionNums_p, versionDates_pp);
 
     long *date_p = getLatestDate(versionDates_pp[0], versionDates_pp[1], versionDates_pp[2]);
     if (!date_p) {date_p = getLatestDate(versionDates_pp[1], versionDates_pp[0], versionDates_pp[2]);}
     if (!date_p) {date_p = getLatestDate(versionDates_pp[2], versionDates_pp[0], versionDates_pp[1]);}
     if (!date_p) {date_p = versionDates_pp[0];} 
-    
+
     SM_BYTE line_p[512];
-    sprintf(line_p, "\n%d-%02d-%02d <a href=\"Dev/HTML/group__selfmakeChangelog.html\">selfmake v%d.%d.%d</a><br>", 
-        date_p[0], date_p[1], date_p[2], versionNums_p[0], versionNums_p[1], versionNums_p[2]);
+    sprintf(line_p, "\n%d-%02d-%02d <a href=\"Dev/HTML/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmake v%d.%d.%d.%d</a><br>", 
+        date_p[0], date_p[1], date_p[2], versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3], 
+        versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3]);
 
     sprintf(new_p + strlen(new_p), line_p);
 
@@ -157,14 +158,14 @@ SM_RESULT generateHomepage(
     sm_Runtime *Runtime_p)
 {
     long size;
-    SM_BYTE *data_p = sm_getFileData("external/selfmake_docs/docs/index.html", &size);
+    SM_BYTE *data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/index.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
 
     data_p = insertChangelogs(data_p, size);
     data_p = insertFullVersion(Runtime_p, data_p, size);
     data_p = insertNews(Runtime_p, data_p, size);
 
-    sm_writeBytesToFile("external/selfmake_docs/docs/index.html", data_p);
+    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/index.html", data_p);
 
     free(data_p);
 
@@ -175,16 +176,16 @@ SM_RESULT generateFooter(
     sm_Runtime *Runtime_p)
 {
     long size;
-    SM_BYTE *data_p = sm_getFileData("external/selfmake_docs/docs/DoxygenTheme/Footer1.html", &size);
+    SM_BYTE *data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer1.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
     data_p = insertFullVersion(Runtime_p, data_p, size);
-    sm_writeBytesToFile("external/selfmake_docs/docs/DoxygenTheme/Footer1.html", data_p);
+    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer1.html", data_p);
     free(data_p);
 
-    data_p = sm_getFileData("external/selfmake_docs/docs/DoxygenTheme/Footer2.html", &size);
+    data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer2.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
     data_p = insertFullVersion(Runtime_p, data_p, size);
-    sm_writeBytesToFile("external/selfmake_docs/docs/DoxygenTheme/Footer2.html", data_p);
+    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer2.html", data_p);
     free(data_p);
 
     return SM_SUCCESS;
