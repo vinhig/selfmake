@@ -105,6 +105,10 @@
         SM_BYTE *filename_p, SM_BYTE *bytes_p
     );
 
+    SM_RESULT sm_messagef(
+        SM_BYTE *format_p, ...
+    );
+
 /** @} */
 
 #endif

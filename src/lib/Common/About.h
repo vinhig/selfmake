@@ -66,6 +66,9 @@
     /**
      * Minor version.
      *
+     * 2021-04-25 | v0.1.2.0 <a id="v0.1.2.0"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Add sm_messagef() to API. 
+     *
      * 2021-04-22 | v0.1.1.0 <a id="v0.1.1.0"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Add custom output path parameter for source contexts, stored in \ref sm_SourceContext.outputPath_p
      *
@@ -78,7 +81,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_MINOR_VERSION 1
+    #define SM_MINOR_VERSION 2
 
     /**
      * Patch version.
@@ -89,7 +92,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 1
+    #define SM_PATCH_VERSION 0
 
 /** @} */
 

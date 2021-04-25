@@ -16,6 +16,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <time.h>
 
 #include <sys/types.h> 
 #include <sys/stat.h>
@@ -152,6 +153,41 @@ static SM_BYTE *insertNews(
     return new_p;
 }
 
+static SM_BYTE *insertTime(
+    sm_Runtime *Runtime_p, SM_BYTE *data_p, size_t size)
+{
+    SM_BYTE *new_p = malloc(size + 10000);
+    memset(new_p, 0, size + 10000);
+
+    SM_BYTE *before_p = data_p;
+    SM_BYTE *after_p = strstr(data_p, "SM_MAKE_INSERT_TIME_BEGIN"); 
+    if (!after_p) {return NULL;}
+    
+    after_p += 29;
+    *after_p = 0;
+
+    sprintf(new_p, before_p);
+
+    time_t t; struct tm* tm;
+    SM_BYTE date_p[11];
+    
+    time(&t);
+    tm = localtime(&t);
+    
+    strftime(date_p, sizeof(date_p), "%Y-%m-%d", tm);
+    sprintf(new_p + strlen(new_p), "\n");
+    sprintf(new_p + strlen(new_p), date_p);
+
+    after_p = strstr(after_p + 1, "<!-- SM_MAKE_INSERT_TIME_END"); 
+    if (!after_p) {return NULL;}
+
+    sprintf(new_p + strlen(new_p), "\n%s", after_p);
+
+    free(data_p);
+
+    return new_p;
+}
+
 // GENERATE ========================================================================================
 
 SM_RESULT generateHomepage(
@@ -164,6 +200,7 @@ SM_RESULT generateHomepage(
     data_p = insertChangelogs(data_p, size);
     data_p = insertFullVersion(Runtime_p, data_p, size);
     data_p = insertNews(Runtime_p, data_p, size);
+    data_p = insertTime(Runtime_p, data_p, size);
 
     sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/index.html", data_p);
 
