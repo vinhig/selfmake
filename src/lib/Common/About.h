@@ -86,13 +86,16 @@
     /**
      * Patch version.
      *
+     * 2021-04-26 | v0.1.2.1 <a id="v0.1.2.1"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Remove inserted project-prefixes in sm_copy(). 
+     *
      * 2021-04-22 | v0.1.1.1 <a id="v0.1.1.1"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Fix missing initialization of \ref sm_SourceContext.api and \ref sm_SourceContext.apiDate_p.
      *
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 0
+    #define SM_PATCH_VERSION 1
 
 /** @} */
 

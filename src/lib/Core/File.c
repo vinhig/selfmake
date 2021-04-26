@@ -63,10 +63,10 @@ SM_BEGIN()
     SM_BYTE fullCommand_p[1024] = {'\0'};
 
     if (out_p[0] != '/') {
-        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s/%s" : "%s -p %s/%s %s/%s", command_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], in_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], out_p);
+        sprintf(fullCommand_p, recursive ? "%s -rp %s %s" : "%s -p %s %s", command_p, in_p, out_p);
     }
     else {
-        sprintf(fullCommand_p, recursive ? "%s -rp %s/%s %s" : "%s -p %s/%s %s", command_p, sm_getVariable(Array_p, "PROJ_DIR")->values_pp[0], in_p, out_p);
+        sprintf(fullCommand_p, recursive ? "%s -rp %s %s" : "%s -p %s %s", command_p, in_p, out_p);
     }
 
     int status = system(fullCommand_p);
