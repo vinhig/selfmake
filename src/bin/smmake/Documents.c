@@ -213,16 +213,16 @@ SM_RESULT generateFooter(
     sm_Runtime *Runtime_p)
 {
     long size;
-    SM_BYTE *data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer1.html", &size);
+    SM_BYTE *data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/theme/footer1.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
     data_p = insertFullVersion(Runtime_p, data_p, size);
-    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer1.html", data_p);
+    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/theme/footer1.html", data_p);
     free(data_p);
 
-    data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer2.html", &size);
+    data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/theme/footer2.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
     data_p = insertFullVersion(Runtime_p, data_p, size);
-    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/DoxygenTheme/Footer2.html", data_p);
+    sm_writeBytesToFile("external/selfmake.netzwerkz.org/docs/theme/footer2.html", data_p);
     free(data_p);
 
     return SM_SUCCESS;

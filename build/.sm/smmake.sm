@@ -54,9 +54,13 @@ source(
     generateFooter()
     chdir("external/selfmake.netzwerkz.org/docs/dev")
     system("doxygen Doxyfile")
+    copy("../resize.js", "html")
+
     chdir()
     chdir("external/selfmake.netzwerkz.org/docs/api")
     system("doxygen Doxyfile")
+    copy("../resize.js", "html")
+
     chdir()
     generateHomepage()
     chdir()
