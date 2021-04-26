@@ -52,10 +52,10 @@ source(
 -d gen
 {
     generateFooter()
-    chdir("external/selfmake.netzwerkz.org/docs/Dev")
+    chdir("external/selfmake.netzwerkz.org/docs/dev")
     system("doxygen Doxyfile")
     chdir()
-    chdir("external/selfmake.netzwerkz.org/docs/API")
+    chdir("external/selfmake.netzwerkz.org/docs/api")
     system("doxygen Doxyfile")
     chdir()
     generateHomepage()
@@ -88,7 +88,7 @@ source(
 
 set(
     NEWS
-    "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./Dev/HTML/group__selfmakeChangelog.html#v0.1.0.0\">v0.1.0.0</a></p>"
+    "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./dev/html/group__selfmakeChangelog.html#v0.1.0.0\">v0.1.0.0</a></p>"
     "<p><b>2021-04-17</b><br>hello world!</p>"
 )
 

@@ -104,7 +104,7 @@ static SM_BYTE *insertChangelogs(
     if (!date_p) {date_p = versionDates_pp[0];} 
 
     SM_BYTE line_p[512];
-    sprintf(line_p, "\n%d-%02d-%02d <a href=\"Dev/HTML/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmake v%d.%d.%d.%d</a><br>", 
+    sprintf(line_p, "\n%d-%02d-%02d <a href=\"dev/html/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmake v%d.%d.%d.%d</a><br>", 
         date_p[0], date_p[1], date_p[2], versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3], 
         versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3]);
 
