@@ -52,12 +52,12 @@ source(
 -d gen
 {
     generateFooter()
-    chdir("external/selfmake.netzwerkz.org/docs/dev")
+    chdir("external/selfmake.netzwerkz.org/docs/impl")
     system("doxygen Doxyfile")
     copy("../resize.js", "html")
 
     chdir()
-    chdir("external/selfmake.netzwerkz.org/docs/api")
+    chdir("external/selfmake.netzwerkz.org/docs/lang")
     system("doxygen Doxyfile")
     copy("../resize.js", "html")
 
@@ -92,7 +92,8 @@ source(
 
 set(
     NEWS
-    "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./dev/html/group__selfmakeChangelog.html#v0.1.0.0\">v0.1.0.0</a></p>"
+    "<p><b>2021-04-27</b><br>Work on the language specification is now underway."
+    "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./impl/html/group__selfmakeChangelog.html#v0.1.0.0\">v0.1.0.0</a></p>"
     "<p><b>2021-04-17</b><br>hello world!</p>"
 )
 
