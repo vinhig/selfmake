@@ -11,7 +11,7 @@
 
 #endif
 
-/** @addtogroup selfmakeEnums
+/** @addtogroup selfmakeAPIEnums
  *  @{
  */ 
 
@@ -96,7 +96,7 @@
 
 /** @} */
 
-/** @addtogroup selfmakeVars 
+/** @addtogroup selfmakeAPIVars 
  *  @{
  */ 
 

@@ -18,7 +18,7 @@
 
 #endif
 
-/** @addtogroup selfmakeFunctions
+/** @addtogroup selfmakeAPIFunctions
  *  @{
  */
 

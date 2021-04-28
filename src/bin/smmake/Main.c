@@ -73,7 +73,7 @@ int main(
     sm_setFunctionCallback(Runtime_p, functionCallback);
     sm_setSourceContextCallback(Runtime_p, sourceContextCallback);
 
-    if (sm_run(Runtime_p, argc, argv_pp)) {return 1;}
+    if (sm_run(Runtime_p, argc - 1, argv_pp + 1)) {return 1;}
 
     while (sm_isRunning()) {sm_sleepMs(100);}
 

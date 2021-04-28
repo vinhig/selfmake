@@ -62,7 +62,7 @@ static SM_RESULT sm_parseArguments(
 {
 SM_BEGIN()
 
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 0; i < argc; ++i) {
         int advance = 0;
         SM_CHECK(sm_parseOption(Runtime_p, argc - i, &argv_pp[i], &advance))
         i += advance - 1;

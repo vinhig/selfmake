@@ -2,13 +2,18 @@
 
 set(PROJ_DIR,"${WRK_DIR}")
 set(LIB_DEST,"${WRK_DIR}/lib/")
+set(BIN_DEST,"${WRK_DIR}/bin/")
 set(PROJ_STAGE,"design phase")
 
 // SOURCE ==========================================================================================
 
 lib(selfmake,"${WRK_DIR}/src/lib/")
+bin(smake,"${WRK_DIR}/src/bin/smake")
 
 link(selfmake,"-lpthread -ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
+link(smake,"-Wl,-rpath=${WRK_DIR}/lib:usr/local/lib -L${WRK_DIR}/lib -lselfmake")
+
+compile(smake,"-std=gnu99")
 compile(selfmake,"-std=gnu99")
 
 source(
@@ -28,6 +33,8 @@ source(
     "Parser/SourceContexts.c"
     "Parser/Functions.c"
     "UI/Message.c"
+    smake
+    "Main.c"
 )
 
 // DOCS ============================================================================================

@@ -98,10 +98,10 @@ static SM_BYTE *insertChangelogs(
     long versionDates_pp[4][3];
     getVersionData(versionNums_p, versionDates_pp);
 
-    long *date_p = getLatestDate(versionDates_pp[0], versionDates_pp[1], versionDates_pp[2]);
-    if (!date_p) {date_p = getLatestDate(versionDates_pp[1], versionDates_pp[0], versionDates_pp[2]);}
-    if (!date_p) {date_p = getLatestDate(versionDates_pp[2], versionDates_pp[0], versionDates_pp[1]);}
-    if (!date_p) {date_p = versionDates_pp[0];} 
+    long *date_p = getLatestDate(versionDates_pp[1], versionDates_pp[2], versionDates_pp[3]);
+    if (!date_p) {date_p = getLatestDate(versionDates_pp[2], versionDates_pp[1], versionDates_pp[3]);}
+    if (!date_p) {date_p = getLatestDate(versionDates_pp[3], versionDates_pp[1], versionDates_pp[2]);}
+    if (!date_p) {date_p = versionDates_pp[1];} 
 
     SM_BYTE line_p[512];
     sprintf(line_p, "\n%d-%02d-%02d <a href=\"impl/html/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmake v%d.%d.%d.%d</a><br>", 

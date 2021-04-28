@@ -17,7 +17,7 @@
 
 #endif
 
-/** @addtogroup selfmakeTypedefs
+/** @addtogroup selfmakeAPITypedefs
  *  @{
  */
 
@@ -28,7 +28,7 @@
 
 /** @} */
 
-/** @addtogroup selfmakeEnums
+/** @addtogroup selfmakeAPIEnums
  *  @{
  */ 
 
@@ -70,7 +70,7 @@
 
 /** @} */
 
-/** @addtogroup selfmakeStructs
+/** @addtogroup selfmakeAPIStructs
  *  @{
  */
 
@@ -106,7 +106,7 @@
 
 /** @} */
 
-/** @addtogroup selfmakeTypedefs
+/** @addtogroup selfmakeAPITypedefs
  *  @{
  */
 

@@ -11,8 +11,11 @@
 
 #endif
 
-/** @defgroup selfmake selfmake
- *  @brief TODO 
+/** @defgroup selfmake selfmake internal
+ *  @brief The internal code-documentation for selfmake. 
+ */
+/** @defgroup selfmakeAPI selfmake API 
+ *  @brief The API code-documentation for selfmake. 
  */
 
 /** @defgroup selfmakeChangelog Changelog
@@ -35,6 +38,22 @@
  */
 /** @defgroup selfmakeVars Variables
  *  @ingroup selfmake
+ */
+
+/** @defgroup selfmakeAPIEnums Enumerations
+ *  @ingroup selfmakeAPI
+ */
+/** @defgroup selfmakeAPIStructs Data Structures
+ *  @ingroup selfmakeAPI
+ */
+/** @defgroup selfmakeAPIFunctions Functions
+ *  @ingroup selfmakeAPI
+ */
+/** @defgroup selfmakeAPITypedefs Typedefs
+ *  @ingroup selfmakeAPI
+ */
+/** @defgroup selfmakeAPIVars Variables
+ *  @ingroup selfmakeAPI
  */
 
 /** @addtogroup selfmakeChangelog
@@ -86,6 +105,9 @@
     /**
      * Patch version.
      *
+     * 2021-04-28 | v0.1.2.2 <a id="v0.1.2.2"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Remove offset from argument parsing.
+     *
      * 2021-04-26 | v0.1.2.1 <a id="v0.1.2.1"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Remove inserted project-prefixes in sm_copy(). 
      *
@@ -95,7 +117,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 1
+    #define SM_PATCH_VERSION 2
 
 /** @} */
 
