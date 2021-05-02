@@ -90,9 +90,10 @@ SM_BEGIN()
 
         SM_BYTE *message_p = malloc(size + 1);
         SM_CHECK_NULL(message_p)
+        memset(message_p, 0, size + 1);
 
         va_start(args, format_p);
-        vsnprintf(message_p, size, format_p, args);
+        vsnprintf(message_p, size + 1, format_p, args);
         va_end(args);
 
         printf("%s: %s\n", name_p, message_p);
@@ -129,9 +130,10 @@ SM_BEGIN()
 
         SM_BYTE *message_p = malloc(size + 1);
         SM_CHECK_NULL(message_p)
+        memset(message_p, 0, size + 1);
 
         va_start(args, format_p);
-        vsnprintf(message_p, size, format_p, args);
+        vsnprintf(message_p, size + 1, format_p, args);
         va_end(args);
 
         printf("%s: \e[1;35mNOTICE:\e[0m %s\n", name_p, message_p);

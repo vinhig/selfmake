@@ -105,6 +105,9 @@
     /**
      * The patch version is used for bugfixes or non-consequential changes.
      *
+     * 2021-05-02 | v0.1.2.4 <a id="v0.1.2.4"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Fix missing last character in messages.
+     *
      * 2021-05-01 | v0.1.2.3 <a id="v0.1.2.3"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Fix possible stack smashing for messages.
      *
@@ -120,7 +123,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 3
+    #define SM_PATCH_VERSION 4
 
 /** @} */
 

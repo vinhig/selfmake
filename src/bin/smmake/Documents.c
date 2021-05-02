@@ -111,10 +111,11 @@ static SM_BYTE *insertChangelogs(
     sprintf(new_p + strlen(new_p), line_p);
 
     sm_ValueArray LangVer = sm_getVariableValues(Runtime_p, "LANG_VER");
+    sm_ValueArray LangDate = sm_getVariableValues(Runtime_p, "LANG_DATE");
 
     memset(line_p, 0, 512);
-    sprintf(line_p, "\n%d-%02d-%02d <a href=\"lang/html/changelog.html#v%s\">selfmakeLanguage v%s</a><br>", 
-        date_p[0], date_p[1], date_p[2], LangVer.values_pp[0], LangVer.values_pp[0]);
+    sprintf(line_p, "\n%s <a href=\"lang/html/changelog.html#v%s\">selfmakeLanguage v%s</a><br>", 
+        LangDate.values_pp[0], LangVer.values_pp[0], LangVer.values_pp[0]);
 
     sprintf(new_p + strlen(new_p), line_p);
 
