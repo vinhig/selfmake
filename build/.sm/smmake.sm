@@ -80,7 +80,7 @@ source(
 {
     chdir("external/selfmake.netzwerkz.org")
     system("git add .")
-    system("git commit -m \"${PROJ_VER}\"")
+    system("git commit -m \"${PROJ_VER}-${LANG_VER}\"")
     system("git push origin HEAD")
     chdir()
 }
@@ -92,7 +92,7 @@ source(
 {
     chdir()
     system("git add .")
-    system("git commit -m \"${PROJ_VER}\"")
+    system("git commit -m \"${PROJ_VER}-${LANG_VER}\"")
     system("git push origin HEAD")
     chdir()
 }
