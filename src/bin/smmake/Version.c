@@ -90,12 +90,23 @@ void getProjectVersion(
     long versionDates_pp[4][3];
     getVersionData(versionNums_p, versionDates_pp);
 
-    if (Stage.length) {
-        SM_BYTE *stage_p = Stage.values_pp[0];
-        sprintf(version_p, "v%d.%d.%d.%d %s", versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3], stage_p);
+    sm_ValueArray LangVer = sm_getVariableValues(Runtime_p, "LANG_VER");
+
+    if (LangVer.length && Stage.length) {
+        sprintf(version_p, "v%d.%d.%d.%d-%s %s", versionNums_p[0], versionNums_p[1], versionNums_p[2], 
+            versionNums_p[3], LangVer.values_pp[0], Stage.values_pp[0]);
+    }
+    else if (LangVer.length) {
+        sprintf(version_p, "v%d.%d.%d.%d-%s", versionNums_p[0], versionNums_p[1], versionNums_p[2], 
+            versionNums_p[3], LangVer.values_pp[0]);
+    }
+    else if (Stage.length) {
+        sprintf(version_p, "v%d.%d.%d.%d %s", versionNums_p[0], versionNums_p[1], versionNums_p[2], 
+            versionNums_p[3], Stage.values_pp[0]);
     }
     else {
-        sprintf(version_p, "v%d.%d.%d.%d", versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3]);
+        sprintf(version_p, "v%d.%d.%d.%d", versionNums_p[0], versionNums_p[1], versionNums_p[2], 
+            versionNums_p[3]);
     }
 }
 

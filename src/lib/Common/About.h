@@ -61,7 +61,7 @@
  */
 
     /**
-     * API version.
+     * The API version is used for backwards-incompatible API changes.
      *
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
@@ -69,7 +69,7 @@
     #define SM_API_VERSION 0
 
     /**
-     * Major version.
+     * The major version is used for the completion of big functionalities.
      *
      * 2021-04-21 | v0.1.0.0 <a id="v0.1.0.0"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Add first iteration of binary building, mostly implemented in sm_build().
@@ -83,7 +83,7 @@
     #define SM_MAJOR_VERSION 1
 
     /**
-     * Minor version.
+     * The minor version is used for the addition of small functionalities.
      *
      * 2021-04-25 | v0.1.2.0 <a id="v0.1.2.0"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Add sm_messagef() to API. 
@@ -103,7 +103,10 @@
     #define SM_MINOR_VERSION 2
 
     /**
-     * Patch version.
+     * The patch version is used for bugfixes or non-consequential changes.
+     *
+     * 2021-05-01 | v0.1.2.3 <a id="v0.1.2.3"></a>
+     * - [Dajo Frey](https://github.com/DajoFrey): Fix possible stack smashing for messages.
      *
      * 2021-04-28 | v0.1.2.2 <a id="v0.1.2.2"></a>
      * - [Dajo Frey](https://github.com/DajoFrey): Remove offset from argument parsing.
@@ -117,7 +120,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/DajoFrey): Initial version.
      */
-    #define SM_PATCH_VERSION 2
+    #define SM_PATCH_VERSION 3
 
 /** @} */
 

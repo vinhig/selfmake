@@ -19,7 +19,7 @@ int main(int argc, char **argv_pp)
     sm_Runtime *Runtime_p = sm_createRuntime("smake");
     if (!Runtime_p) {return 1;}
 
-    sm_addFile(Runtime_p, "make.sm");
+    sm_addFile(Runtime_p, "MAKE.sm");
 
     if (sm_run(Runtime_p, argc - 1, argv_pp + 1)) {return 1;}
 

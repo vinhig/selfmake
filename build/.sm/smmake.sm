@@ -4,6 +4,7 @@ set(PROJ_DIR,"${WRK_DIR}")
 set(LIB_DEST,"${WRK_DIR}/lib/")
 set(BIN_DEST,"${WRK_DIR}/bin/")
 set(PROJ_STAGE,"design phase")
+set(LANG_VER,"0.0")
 
 // SOURCE ==========================================================================================
 

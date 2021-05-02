@@ -49,7 +49,7 @@ SM_BEGIN()
         va_list args;
         va_start(args, format_p);
     
-        SM_BYTE message_p[1024] = {'\0'};
+        SM_BYTE message_p[4096] = {'\0'};
         vsprintf(message_p, format_p, args);
     
         va_end(args);
@@ -83,15 +83,22 @@ SM_BEGIN()
     else 
     {
         va_list args;
+
         va_start(args, format_p);
+        int size = vsnprintf(NULL, 0, format_p, args);
+        va_end(args);
 
-        SM_BYTE message_p[1024] = {'\0'};
-        vsprintf(message_p, format_p, args);
+        SM_BYTE *message_p = malloc(size + 1);
+        SM_CHECK_NULL(message_p)
 
+        va_start(args, format_p);
+        vsnprintf(message_p, size, format_p, args);
         va_end(args);
 
         printf("%s: %s\n", name_p, message_p);
         messages++;
+
+        free(message_p);
     }
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
@@ -115,15 +122,22 @@ SM_BEGIN()
     else 
     {
         va_list args;
+
         va_start(args, format_p);
+        int size = vsnprintf(NULL, 0, format_p, args);
+        va_end(args);
 
-        SM_BYTE message_p[1024] = {'\0'};
-        vsprintf(message_p, format_p, args);
+        SM_BYTE *message_p = malloc(size + 1);
+        SM_CHECK_NULL(message_p)
 
+        va_start(args, format_p);
+        vsnprintf(message_p, size, format_p, args);
         va_end(args);
 
         printf("%s: \e[1;35mNOTICE:\e[0m %s\n", name_p, message_p);
         messages++;
+
+        free(message_p);
     }
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)

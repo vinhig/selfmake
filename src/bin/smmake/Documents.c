@@ -80,7 +80,7 @@ static SM_BYTE *insertFullVersion(
 }
 
 static SM_BYTE *insertChangelogs(
-    SM_BYTE *data_p, size_t size)
+    sm_Runtime *Runtime_p, SM_BYTE *data_p, size_t size)
 {
     SM_BYTE *new_p = malloc(size + 10000);
     memset(new_p, 0, size + 10000);
@@ -104,9 +104,17 @@ static SM_BYTE *insertChangelogs(
     if (!date_p) {date_p = versionDates_pp[1];} 
 
     SM_BYTE line_p[512];
-    sprintf(line_p, "\n%d-%02d-%02d <a href=\"impl/html/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmake v%d.%d.%d.%d</a><br>", 
+    sprintf(line_p, "\n%d-%02d-%02d <a href=\"impl/html/group__selfmakeChangelog.html#v%d.%d.%d.%d\">selfmakeLibrary v%d.%d.%d.%d</a><br>\n", 
         date_p[0], date_p[1], date_p[2], versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3], 
         versionNums_p[0], versionNums_p[1], versionNums_p[2], versionNums_p[3]);
+
+    sprintf(new_p + strlen(new_p), line_p);
+
+    sm_ValueArray LangVer = sm_getVariableValues(Runtime_p, "LANG_VER");
+
+    memset(line_p, 0, 512);
+    sprintf(line_p, "\n%d-%02d-%02d <a href=\"lang/html/changelog.html#v%s\">selfmakeLanguage v%s</a><br>", 
+        date_p[0], date_p[1], date_p[2], LangVer.values_pp[0], LangVer.values_pp[0]);
 
     sprintf(new_p + strlen(new_p), line_p);
 
@@ -197,7 +205,7 @@ SM_RESULT generateHomepage(
     SM_BYTE *data_p = sm_getFileData("external/selfmake.netzwerkz.org/docs/index.html", &size);
     if (!data_p) {return SM_ERROR_BAD_STATE;}
 
-    data_p = insertChangelogs(data_p, size);
+    data_p = insertChangelogs(Runtime_p, data_p, size);
     data_p = insertFullVersion(Runtime_p, data_p, size);
     data_p = insertNews(Runtime_p, data_p, size);
     data_p = insertTime(Runtime_p, data_p, size);
