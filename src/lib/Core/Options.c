@@ -60,7 +60,7 @@ SM_BEGIN()
                 for (int i = 0; i < args; ++i) {
                     SM_BYTE *argument_p = Parser_p->Definitions_p[d].Option.arguments_pp[i];
                     SM_BYTE *offsetArgument_p = argument_p;
-                    if (!strcmp(Parser_p->Definitions_p[d].Option.name_p, "b")) {
+                    if (Parser_p->Definitions_p[d].Option.name_p[0] ==  'b' || Parser_p->Definitions_p[d].Option.name_p[0] == 't') {
                         offsetArgument_p = sm_offsetBuildArgumentPrefix(Runtime_p, Parser_p, argument_p);
                     }
                     if (strcmp(argument_p, argv_pp[i]) && strcmp(offsetArgument_p, argv_pp[i])) {
@@ -76,6 +76,56 @@ SM_BEGIN()
     }
 
 SM_END(NULL)
+}
+
+static sm_Option *sm_getShortOptions(
+    sm_Runtime *Runtime_p, SM_BYTE *name_p, SM_BYTE **argv_pp, int args, int *options_p)
+{
+SM_BEGIN()
+
+    *options_p = 0;
+
+    sm_Option *Options_p = NULL;
+    SM_BYTE c = 0;
+
+    for (int i = 0; i < strlen(name_p); ++i) 
+    {
+        if (i + 1 < strlen(name_p)) {
+            c = name_p[i+1];
+            name_p[i+1] = 0;
+        }
+
+        sm_Option *Option_p = NULL;
+        for (int j = 0; j < Runtime_p->ParserArray.length; ++j) {
+            sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[j];
+            Option_p = sm_getOptionFromParser(Runtime_p, Parser_p, name_p+i, argv_pp, args);
+            if (Option_p) {break;}
+        }
+
+        if (Option_p) {
+            if (*options_p == 0) {
+                Options_p = Option_p;
+            }
+            else if (*options_p == 1) {
+                sm_Option *Tmp_p = malloc(sizeof(sm_Option)*2);
+                Tmp_p[0] = *Options_p;
+                Tmp_p[1] = *Option_p;
+                Options_p = Tmp_p;
+            }
+            else {
+                Options_p = realloc(Options_p, sizeof(sm_Option)*(*options_p+1));
+                Options_p[*options_p] = *Option_p;
+            }
+            *options_p += 1;
+        }
+
+        if (c != 0) {
+            name_p[i+1] = c;
+            c = 0;
+        }
+    }
+
+SM_END(Options_p)
 }
 
 static sm_Option *sm_getOption(
@@ -141,6 +191,9 @@ SM_BEGIN()
             SM_CHECK(sm_build(Runtime_p, Option_p->arguments_pp[0]))
         }
         else if (!strcmp(Option_p->name_p, "i")) {
+        }
+        else if (!strcmp(Option_p->name_p, "t")) {
+            SM_CHECK(sm_test(Runtime_p, Option_p->arguments_pp[0]))
         }
         else {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
     }
@@ -224,81 +277,142 @@ SM_BEGIN()
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }
 
+SM_RESULT sm_addTestOption(
+    sm_Runtime *Runtime_p, SM_BYTE *name_p)
+{
+SM_BEGIN()
+
+    static SM_BYTE *option_p = "t";
+
+    sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[0];
+
+    Parser_p->Definitions_p = realloc(Parser_p->Definitions_p, sizeof(sm_Definition) * (Parser_p->definitions + 1));
+    SM_CHECK_NULL(Parser_p->Definitions_p)
+
+    sm_Definition *Definition_p = &Parser_p->Definitions_p[Parser_p->definitions++];
+
+    SM_BYTE *description_p = malloc(strlen(name_p) + 7);
+    SM_CHECK_NULL(description_p)
+    sprintf(description_p, "test %s", name_p);
+
+    SM_BYTE *argument_p = malloc(strlen(name_p) + 1);
+    SM_CHECK_NULL(argument_p)
+    strcpy(argument_p, name_p);
+
+    SM_BYTE **arguments_pp = malloc(sizeof(SM_BYTE*));
+    SM_CHECK_NULL(arguments_pp)
+    arguments_pp[0] = argument_p;
+
+    Definition_p->type = SM_DEFINITION_OPTION;
+    Definition_p->Option.arguments     = 1;
+    Definition_p->Option.arguments_pp  = arguments_pp;
+    Definition_p->Option.longOption    = SM_FALSE;
+    Definition_p->Option.name_p        = option_p;
+    Definition_p->Option.description_p = description_p;
+    Definition_p->Option.Block_p       = NULL;
+
+    sm_messagef("Generate Option '-t %s'", name_p);
+
+SM_DIAGNOSTIC_END(SM_SUCCESS)
+}
+
 // PARSE ===========================================================================================
+
+static SM_RESULT sm_parseShortOption(
+    sm_Runtime *Runtime_p, int argc, SM_BYTE **argv_pp, int *advance_p)
+{
+SM_BEGIN()
+
+    SM_BOOL match = SM_FALSE;
+    int options = 0;
+    sm_Option *Options_p = NULL;
+
+    *advance_p = 1;
+
+    for (int i = 1; i < argc; ++i) 
+    {
+        if (argv_pp[i][0] == '-') {
+            break;
+        }
+
+        Options_p = sm_getShortOptions(Runtime_p, &argv_pp[0][1], &argv_pp[i], 1, &options);
+        if (Options_p) {
+            for (int j = 0; j < options; ++j) {
+                SM_CHECK(sm_executeOption(Runtime_p, Options_p+j))
+            }
+            if (options > 1) {free(Options_p);}
+            Options_p = NULL;
+            match = SM_TRUE;
+        }
+
+        *advance_p += 1;
+    }
+
+    if (Options_p) {
+        for (int i = 0; i < options; ++i) {
+            SM_CHECK(sm_executeOption(Runtime_p, Options_p+i))
+        }
+        if (options > 1) {free(Options_p);}
+    }
+
+SM_DIAGNOSTIC_END(SM_SUCCESS)
+}
+
+static SM_RESULT sm_parseLongOption(
+    sm_Runtime *Runtime_p, int argc, SM_BYTE **argv_pp, int *advance_p)
+{
+SM_BEGIN()
+
+    SM_BOOL match = SM_FALSE;
+    sm_Option *Option_p = NULL;
+
+    for (int i = 0; i < argc; ++i) 
+    {
+        if (i > 0 && argv_pp[i][0] == '-') {
+            break;
+        }
+
+        sm_Option *NewOption_p = 
+            sm_getOption(Runtime_p, &argv_pp[0][2], i == 0 ? NULL : &argv_pp[1], *advance_p);
+
+        if (NewOption_p) {
+            Option_p = NewOption_p;
+        }
+        else {
+            sm_noticef("Invalid option \"%s\"", argv_pp[i]);
+            SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)
+        }
+
+        *advance_p += 1;
+    }
+
+    if (Option_p) {
+        SM_CHECK(sm_executeOption(Runtime_p, Option_p))
+    }
+ 
+SM_DIAGNOSTIC_END(SM_SUCCESS)
+}
 
 SM_RESULT sm_parseOption(
     sm_Runtime *Runtime_p, int argc, SM_BYTE **argv_pp, int *advance_p)
 {
 SM_BEGIN()
 
-    int expect = 0;
-    sm_Option *Option_p = NULL;
+    int advance = 0;
 
-    for (int i = 0; i < argc; ++i) 
+    for (int i = 0; i < argc; i += advance) 
     {
-        if (argv_pp[i][0] == '-' && expect) {
-            sm_noticef("Invalid option \"%s\"", argv_pp[i - expect]);
-            SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)
+        advance = 0;
+
+        if (argv_pp[i][0] == '-' && argv_pp[i][1] != '-') {
+            SM_CHECK(sm_parseShortOption(Runtime_p, argc-i, &argv_pp[i], &advance))
         }
-        if (argv_pp[i][0] == '-' && Option_p) {
-            *advance_p = i;
-            SM_END(sm_executeOption(Runtime_p, Option_p))
+        else if (argv_pp[i][0] == '-' && argv_pp[i][1] == '-') {
+            SM_CHECK(sm_parseLongOption(Runtime_p, argc-i, &argv_pp[i], &advance))
         }
 
-        if (argv_pp[i][0] == '-' && argv_pp[i][1] == '-')
-        {
-            Option_p = sm_getOption(Runtime_p, argv_pp[i] + 2, NULL, 0);
-
-            if (!Option_p) {
-                if (!sm_optionNameExists(Runtime_p, argv_pp[i] + 2)) {
-                    sm_noticef("Invalid option \"%s\"", argv_pp[i]);
-                    SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)
-                }
-                expect = 1;
-            }
-        }
-        else if (argv_pp[i][0] == '-' && argv_pp[i][1] != '-')
-        {
-            Option_p = sm_getOption(Runtime_p, argv_pp[i] + 1, NULL, 0);
-
-            if (!Option_p) {
-                if (!sm_optionNameExists(Runtime_p, argv_pp[i] + 1)) {
-                    sm_noticef("Invalid option \"%s\"", argv_pp[i]);
-                    SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)
-                }
-                expect = 1;
-            }
-        }
-        else if (expect) {
-            sm_Option *Match_p = sm_getOption(Runtime_p, argv_pp[i - expect][1] == '-' ? argv_pp[i - expect] + 2 : argv_pp[i - expect] + 1, &argv_pp[i - (expect - 1)], expect);
-            if (Match_p) {
-                Option_p = Match_p;
-                expect = 0;
-            }
-        }
-        else if (Option_p) {
-            sm_Option *Match_p = sm_getOption(Runtime_p, Option_p->name_p, &argv_pp[i - Option_p->arguments], Option_p->arguments + 1);
-            if (!Match_p) {
-                SM_CHECK(sm_executeOption(Runtime_p, Option_p))
-                Match_p = sm_getOption(Runtime_p, Option_p->name_p, &argv_pp[i], 1);
-                if (!Match_p) {
-                    sm_noticef("Invalid option \"%s\"", argv_pp[i]);
-                    SM_DIAGNOSTIC_END(SM_ERROR_INVALID_OPTION)
-                }
-                Option_p = Match_p;
-            }
-            else {
-                SM_CHECK(sm_executeOption(Runtime_p, Option_p))
-                Option_p = Match_p;
-            }
-        }
+        *advance_p += advance;
     }
-
-    if (Option_p) {
-        SM_CHECK(sm_executeOption(Runtime_p, Option_p))
-        *advance_p = argc;
-    }
-    else {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }

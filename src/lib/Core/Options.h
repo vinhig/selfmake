@@ -27,6 +27,10 @@
         sm_Runtime *Runtime_p, SM_BYTE *name_p
     );
 
+    SM_RESULT sm_addTestOption(
+        sm_Runtime *Runtime_p, SM_BYTE *name_p
+    );
+
     SM_RESULT sm_parseOption(
         sm_Runtime *Runtime_p, int argc, SM_BYTE **argv_pp, int *advance_p
     );

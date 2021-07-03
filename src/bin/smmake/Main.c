@@ -66,7 +66,7 @@ int main(
     sprintf(wrkDir_p, "%s/..", sm_getProcessDirectory());
     getProjectVersion(Runtime_p, version_p);
 
-    sm_setVariable(Runtime_p, "PROJ_VER", &version_p, 1);
+    sm_setVariable(Runtime_p, "PROJ_REV", &version_p, 1);
     sm_setVariable(Runtime_p, "WRK_DIR", &wrkDir_p, 1);
 
     sm_addFile(Runtime_p, "build/.sm/smmake.sm");

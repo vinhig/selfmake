@@ -128,6 +128,7 @@ SM_BEGIN()
         sm_Variable *All_p = sm_getVariable(&Runtime_p->VariableArray, "ALL");
         for (int j = 0; All_p && j < All_p->valueCount; ++j) {
             SM_CHECK(sm_addBuildOption(Runtime_p, All_p->values_pp[j]))
+            SM_CHECK(sm_addTestOption(Runtime_p, All_p->values_pp[j]))
         }
     }
     
@@ -171,6 +172,7 @@ SM_BEGIN()
 
     sm_initFileArray(&Runtime_p->FileArray);
     sm_initParserArray(&Runtime_p->ParserArray);
+    sm_initTestArray(&Runtime_p->TestArray);
     sm_initSourceArray(&Runtime_p->SourceArray);
     sm_initSourceContextArray(&Runtime_p->SourceContextArray);
     sm_initVariableArray(&Runtime_p->VariableArray);

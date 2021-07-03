@@ -104,6 +104,10 @@
         int length;
     } sm_ValueArray;
 
+    typedef struct sm_TestArgument {
+        SM_BYTE *p;
+    } sm_TestArgument;
+
 /** @} */
 
 /** @addtogroup selfmakeAPITypedefs

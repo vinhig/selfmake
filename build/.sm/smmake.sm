@@ -34,6 +34,10 @@ source(
     "Parser/Sources.c"
     "Parser/SourceContexts.c"
     "Parser/Functions.c"
+    "Test/Channel.c"
+    "Test/Process.c"
+    "Test/Library.c"
+    "Test/Test.c"
     "UI/Message.c"
     smake
     "Main.c"
@@ -80,7 +84,7 @@ source(
 {
     chdir("external/selfmake.netzwerkz.org")
     system("git add .")
-    system("git commit -m \"${PROJ_VER}-${LANG_VER}\"")
+    system("git commit -m \"${PROJ_REV}-${LANG_VER}\"")
     system("git push origin HEAD")
     chdir()
 }
@@ -92,7 +96,7 @@ source(
 {
     chdir()
     system("git add .")
-    system("git commit -m \"${PROJ_VER}-${LANG_VER}\"")
+    system("git commit -m \"${PROJ_REV}-${LANG_VER}\"")
     system("git push origin HEAD")
     chdir()
 }

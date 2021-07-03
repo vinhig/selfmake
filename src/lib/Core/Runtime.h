@@ -17,6 +17,8 @@
 #include "../Parser/Sources.h"
 #include "../Parser/SourceContexts.h"
 
+#include "../Test/Test.h"
+
 #endif
 
 /** @addtogroup selfmakeStructs
@@ -30,6 +32,7 @@
         SM_BYTE *prefix_p;
         sm_ParserArray ParserArray;
         sm_SourceArray SourceArray; 
+        sm_TestArray TestArray;
         sm_SourceContextArray SourceContextArray; 
         sm_VariableArray VariableArray; 
         sm_FileArray FileArray; 

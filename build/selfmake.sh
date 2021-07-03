@@ -24,6 +24,10 @@ $DIR/src/lib/Parser/Variables.c \
 $DIR/src/lib/Parser/Sources.c \
 $DIR/src/lib/Parser/SourceContexts.c \
 $DIR/src/lib/Parser/Functions.c \
+$DIR/src/lib/Test/Channel.c \
+$DIR/src/lib/Test/Process.c \
+$DIR/src/lib/Test/Library.c \
+$DIR/src/lib/Test/Test.c \
 $DIR/src/lib/UI/Message.c \
 
 gcc -std=gnu99 -no-pie -Wl,-rpath=$DIR/lib/ -o$DIR/build/smmake -L$DIR/lib/ -lselfmake \

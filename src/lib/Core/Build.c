@@ -114,6 +114,7 @@ SM_BEGIN()
     SM_BYTE *linkArgs_p = Context_p->linkArgs_p ? Context_p->linkArgs_p : &empty;
     SM_BYTE *compileArgs_p = Context_p->compileArgs_p ? Context_p->compileArgs_p : &empty;
 
+    int api   = Context_p->api; 
     int major = Context_p->major; 
     int minor = Context_p->minor; 
     int patch = Context_p->patch;
@@ -146,16 +147,16 @@ SM_BEGIN()
     if (Context_p->outputPath_p) {dest_p = Context_p->outputPath_p;}
 
     SM_BYTE libPath_p[256] = {'\0'};
-    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d", dest_p, libName_p, major, minor, patch);
+    sprintf(libPath_p, "%s/lib%s.so.%d.%d.%d.%d", dest_p, libName_p, api, major, minor, patch);
     SM_BYTE symPath1_p[256] = {'\0'};
-    sprintf(symPath1_p, "%s/lib%s.so.%d", dest_p, libName_p, major);
+    sprintf(symPath1_p, "%s/lib%s.so.%d", dest_p, libName_p, api);
     SM_BYTE symPath2_p[256] = {'\0'};
     sprintf(symPath2_p, "%s/lib%s.so", dest_p, libName_p);
   
     SM_CHECK(sm_createSharedLibraryUsingGCC(objects_p, libPath_p, compileArgs_p, linkArgs_p))
 
     memset(libPath_p, 0, 256); 
-    sprintf(libPath_p, "lib%s.so.%d.%d.%d", libName_p, major, minor, patch);
+    sprintf(libPath_p, "lib%s.so.%d.%d.%d.%d", libName_p, api, major, minor, patch);
     sm_createSymLink(libPath_p, symPath1_p, SM_FALSE);
     sm_createSymLink(libPath_p, symPath2_p, SM_FALSE);
 

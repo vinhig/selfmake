@@ -167,6 +167,9 @@ SM_BEGIN()
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "source")) {
         result = sm_addSource(&Runtime_p->SourceContextArray, &Runtime_p->SourceArray, Function_p);
     }
+    else if (sm_caseInsensitiveMatch(Function_p->name_p, "test")) {
+        result = sm_addTest(&Runtime_p->SourceContextArray, &Runtime_p->TestArray, Function_p);
+    }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "copy")) {
         result = sm_executeCopyFunction(Runtime_p, Function_p);
     }
@@ -178,6 +181,9 @@ SM_BEGIN()
     }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "mkdir")) {
         result = sm_executeMkdirFunction(Function_p);
+    }
+    else if (sm_caseInsensitiveMatch(Function_p->name_p, "system")) {
+        result = sm_executeSystemFunction(Function_p);
     }
     else if (sm_caseInsensitiveMatch(Function_p->name_p, "system")) {
         result = sm_executeSystemFunction(Function_p);
