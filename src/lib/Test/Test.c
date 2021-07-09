@@ -35,7 +35,7 @@
 
 typedef int (*sm_initializer_f)();
 typedef void *(*sm_customLoader_f)(SM_BYTE *libraryName_p, SM_BYTE *functionName_p);
-typedef int (*sm_test_f)(int arguments, sm_TestArgument *Arguments_p);
+typedef int (*sm_test_f)(int arguments, sm_TestArgument *Arguments_p, SM_BYTE *output_p, int maxOutputLength);
 
 static SM_RESULT sm_runTests(
     sm_TestEnvironment *TestEnvironment_p)
@@ -88,13 +88,13 @@ SM_BEGIN()
 
         SM_CHECK_NULL(test_f)
 
-        // perform the test
-        int result = test_f(Test_p->arguments, Test_p->Arguments_p);
+        SM_BYTE result_p[1024];
+        memset(result_p, 0, 1024);
 
-        if (result) {
-            sm_messagef("Test [%s]: FAIL", Test_p->name_p);
-        }
-        else {sm_messagef("Test [%s]: SUCCESS", Test_p->name_p);}
+        // perform the test
+        int result = test_f(Test_p->arguments, Test_p->Arguments_p, result_p, 1024);
+
+        sm_messagef("%d: %s", result, result_p);
 
         match = SM_TRUE;
     }
