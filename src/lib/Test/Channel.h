@@ -21,7 +21,7 @@
 
     // TODO semaphore etc.
     typedef struct sm_Channel {
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
         int rw_p[2];
 #endif
     } sm_Channel;

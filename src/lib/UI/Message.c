@@ -18,9 +18,9 @@
 #include SM_FLOW
 #include SM_DEFAULT_CHECK
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 // DATA ============================================================================================

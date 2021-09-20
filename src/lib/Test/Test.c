@@ -27,7 +27,7 @@
 #include <errno.h>
 #include <string.h>
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/wait.h>
 #endif
 

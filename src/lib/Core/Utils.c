@@ -23,9 +23,13 @@
 #include <stdio.h>
 #include <pwd.h>
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/stat.h>
     #include <sys/types.h>
+#endif
+
+#if defined(__APPLE__)
+    #include <mach-o/dyld.h>
 #endif
 
 // DIRECTORY =======================================================================================
@@ -36,15 +40,18 @@ static SM_BYTE *wrkDir_p = NULL;
 SM_BYTE *sm_getProcessDirectory()
 {
 SM_BEGIN()
-
     if (procDir_p) {SM_END(procDir_p)}
 
     int size = 1024;
     SM_BYTE buffer_p[1024] = {0};
-
+#if defined(__linux__)
     if (readlink("/proc/self/exe", buffer_p, size) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, size) == -1
     &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_END(NULL)}
+#elif defined(__APPLE__)
+    size = 0;
+    _NSGetExecutablePath(NULL, &size);
+    _NSGetExecutablePath(buffer_p, &size);
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
@@ -54,6 +61,8 @@ SM_BEGIN()
     procDir_p = malloc(strlen(buffer_p) + 1);
     SM_CHECK_NULL(NULL, procDir_p)
     sprintf(procDir_p, buffer_p);
+#endif
+
 
 SM_END(procDir_p)
 }

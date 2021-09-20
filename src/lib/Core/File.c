@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <pwd.h>
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/stat.h>
     #include <sys/types.h>
 #endif
@@ -56,7 +56,7 @@ SM_BEGIN()
 
     if (!sm_canRunCommand("cp")) {SM_DIAGNOSTIC_END(SM_ERROR_CP_NOT_FOUND)}
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     SM_BYTE command_p[32] = {'\0'};
     sprintf(command_p, sudo ? "sudo cp" : "cp");
@@ -84,7 +84,7 @@ SM_RESULT sm_createSymLink(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     if (!sm_canRunCommand("ln")) {SM_DIAGNOSTIC_END(SM_ERROR_CP_NOT_FOUND)}
 

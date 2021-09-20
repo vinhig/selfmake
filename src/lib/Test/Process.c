@@ -22,8 +22,9 @@
 #include <errno.h>
 #include <string.h>
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/wait.h>
+    #include <signal.h>
 #endif
 
 // FORK ============================================================================================
@@ -104,7 +105,7 @@ SM_BEGIN()
 //        sm_Process *Proc_p = &SM_PROCESS_POOL.Forks_p[i];
 //        if (Proc_p->id != 0) {
 //            int status;
-//#ifdef __unix__
+//#if defined(__linux__) || defined(__APPLE__)
 //            int result = waitpid(Proc_p->id, &status, WNOHANG);
 //            if (result == -1) {
 //                printf("sm_checkForks %s\n", strerror(errno));

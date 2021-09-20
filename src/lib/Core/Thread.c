@@ -17,8 +17,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifdef __unix__
+#if defined(__linux__)
     #include <sys/sysinfo.h>
+#endif
+
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/types.h>
     #include <sys/wait.h>
     #include <sys/time.h>
@@ -113,7 +116,7 @@ SM_BEGIN()
     Thread_p->running = SM_TRUE;
     Thread_p->Runtime_p = Runtime_p;
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     pthread_create(&Thread_p->id, NULL, sm_executeThread, (void*)Arguments_p);
 
@@ -142,7 +145,7 @@ sm_Thread *_sm_getThread()
 {
     for (int i = 0; i < SM_MAX_THREADS; ++i) 
     {
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
         if (SM_THREAD_POOL.Threads_p[i].id == pthread_self())
 #elif defined(_WIN32) || defined (WIN32)
         if (SM_THREAD_POOL.Threads_p[i].id == GetCurrentThreadId())
@@ -162,15 +165,22 @@ SM_RESULT sm_sleepMs(
 {
 SM_BEGIN()
 
-#ifdef WIN32
+#if defined(WIN32)
     Sleep(milliseconds);
-#elif _POSIX_C_SOURCE >= 199309L
+#elif defined(__linux__)
+    #if _POSIX_C_SOURCE >= 199309L
+        struct timespec ts;
+        ts.tv_sec = milliseconds / 1000;
+        ts.tv_nsec = (milliseconds % 1000) * 1000000;
+        nanosleep(&ts, NULL);
+    #else
+        usleep(milliseconds * 1000);
+    #endif
+#elif defined(__APPLE__)
     struct timespec ts;
     ts.tv_sec = milliseconds / 1000;
     ts.tv_nsec = (milliseconds % 1000) * 1000000;
     nanosleep(&ts, NULL);
-#else
-    usleep(milliseconds * 1000);
 #endif
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)

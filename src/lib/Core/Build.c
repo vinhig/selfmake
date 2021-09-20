@@ -123,7 +123,7 @@ SM_BEGIN()
     sprintf(tmp_p, "/tmp/%s", sm_getVariable(&Runtime_p->VariableArray, "NAME")->values_pp[0]);
     chdir(tmp_p);
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     int index = 0;
     SM_BYTE objects_p[16384] = {'\0'};

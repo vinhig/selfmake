@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
     
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 #include <pthread.h>
 #elif defined(_WIN32) || defined(WIN32)
 #include <windows.h>
@@ -42,7 +42,7 @@
         int depth;
         SM_BOOL running;
         sm_Runtime *Runtime_p;
-    #ifdef __unix__
+    #if defined(__linux__) || defined(__APPLE__)
         pthread_t id;              
     #elif defined(_WIN32) || defined (WIN32)
         DWORD id;              

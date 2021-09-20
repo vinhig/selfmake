@@ -22,7 +22,7 @@
 #include <errno.h>
 #include <string.h>
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     #include <sys/wait.h>
 #endif
 
@@ -31,7 +31,7 @@
 void *sm_openLibrary(
     SM_BYTE *path_p)
 {
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     SM_BYTE *error_p;
     dlerror();
@@ -51,7 +51,7 @@ void *sm_openLibrary(
 void sm_closeLibrary(
     void *lib_p)
 {
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     dlclose(lib_p);
 
@@ -61,11 +61,14 @@ void sm_closeLibrary(
 SM_RESULT sm_getExeDir(
     SM_BYTE *buffer_p, size_t size)
 {
-#ifdef __unix__
-
-    if (readlink("/proc/self/exe", buffer_p, 1024) == -1 
-    &&  readlink("/proc/curproc/file", buffer_p, 1024) == -1
-    &&  readlink("/proc/self/path/a.out", buffer_p, 1024) == -1) {return SM_ERROR_BAD_STATE;}
+#if defined(__linux__)
+    if (readlink("/proc/self/exe", buffer_p, size) == -1 
+    &&  readlink("/proc/curproc/file", buffer_p, size) == -1
+    &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_END(NULL)}
+#elif defined(__APPLE__)
+    size = 0;
+    _NSGetExecutablePath(NULL, &size);
+    _NSGetExecutablePath(buffer_p, &size);
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
@@ -80,7 +83,7 @@ SM_RESULT sm_getExeDir(
 void *sm_loadSymbol(
     void *lib_p, const SM_BYTE *name_p)
 {
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     SM_BYTE *error_p;
     dlerror(); // clear any existing error

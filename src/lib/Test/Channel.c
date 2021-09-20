@@ -27,7 +27,7 @@ SM_RESULT sm_initChannel(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     Channel_p->rw_p[0] = 0;
     Channel_p->rw_p[1] = 0;
 #endif
@@ -40,7 +40,7 @@ SM_RESULT sm_openChannel(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     pipe(Channel_p->rw_p);
 #endif
 
@@ -52,7 +52,7 @@ void sm_closeChannelReadAccess(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     close(Channel_p->rw_p[0]);
 #endif
 
@@ -64,7 +64,7 @@ void sm_closeChannelWriteAccess(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     close(Channel_p->rw_p[1]);
 #endif
 
@@ -76,7 +76,7 @@ int sm_writeToChannel(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
     int result = write(Channel_p->rw_p[1], bytes_p, byteCount);
 #endif
 
@@ -88,7 +88,7 @@ char *sm_readFromChannel(
 {
 SM_BEGIN()
 
-#ifdef __unix__
+#if defined(__linux__) || defined(__APPLE__)
 
     struct timeval timeout;
     timeout.tv_sec = 0;
