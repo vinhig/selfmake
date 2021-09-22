@@ -71,6 +71,9 @@
     /**
      * The major version is used for the completion of big functionalities.
      *
+     * 2021-09-22 | v0.3.0.0 <a id="v0.3.0.0"></a>
+     * - [Dajo Frey](https://github.com/dajofrey): Add first iteration of conditional element support.
+     *
      * 2021-07-03 | v0.2.0.0 <a id="v0.2.0.0"></a>
      * - [Dajo Frey](https://github.com/dajofrey): Add experimental test capabilities.
      * - [Dajo Frey](https://github.com/dajofrey): Improve option parsing.
@@ -84,7 +87,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/dajofrey): Initial version.
      */
-    #define SM_MAJOR_VERSION 2
+    #define SM_MAJOR_VERSION 3
 
     /**
      * The minor version is used for the addition of small functionalities.
@@ -130,7 +133,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/dajofrey): Initial version.
      */
-    #define SM_PATCH_VERSION 1
+    #define SM_PATCH_VERSION 0
 
 /** @} */
 

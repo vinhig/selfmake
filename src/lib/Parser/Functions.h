@@ -26,8 +26,12 @@
         sm_Runtime *Runtime_p, sm_Function *Function_p
     ); 
 
-    SM_RESULT sm_executeFunctions(
-        sm_Runtime *Runtime_p, sm_Parser *Parser_p
+    SM_RESULT sm_executeBlock(
+        sm_Runtime *Runtime_p, sm_Block *Block_p
+    );
+
+    SM_BOOL sm_compareIf(
+        sm_Runtime *Runtime_p, sm_If *If_p, SM_BOOL b
     );
 
 /** @} */

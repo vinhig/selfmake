@@ -112,19 +112,42 @@ SM_BEGIN()
 SM_END(processedArgs_pp)
 }
 
+static SM_RESULT sm_executeGlobalFunctions(
+    sm_Runtime *Runtime_p, sm_Parser *Parser_p)
+{
+SM_BEGIN()
+
+    if (Parser_p->executed) {SM_END(SM_SUCCESS)}
+
+    sm_Block Block;
+    Block.definitions = Parser_p->definitions;
+    Block.Definitions_p = Parser_p->Definitions_p;
+
+    SM_CHECK(sm_executeBlock(Runtime_p, &Block))
+
+    Parser_p->executed = SM_TRUE;
+
+SM_END(SM_SUCCESS)
+}
+
 SM_RESULT sm_executeRuntime(
     sm_Runtime *Runtime_p, SM_BYTE **args_pp, int args)
 {
 SM_BEGIN()
 
-    for (int i = 0; i < Runtime_p->FileArray.length; ++i) {
+    for (int i = 0; i < Runtime_p->FileArray.length; ++i) 
+    {
         SM_CHECK(sm_appendParser(
             &Runtime_p->ParserArray, &Runtime_p->FileArray.Files_p[i], Runtime_p->showParseTree
         ))
-        sm_operationf("Execute Functions");
-        SM_CHECK(sm_executeFunctions(
-            Runtime_p, &Runtime_p->ParserArray.Parsers_p[Runtime_p->ParserArray.length - 1]
-        ))
+
+        sm_operationf("Execute Global Functions");
+        sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[Runtime_p->ParserArray.length - 1];
+
+        if (Parser_p->executed) {continue;}
+        SM_CHECK(sm_executeGlobalFunctions(Runtime_p, Parser_p))
+        Parser_p->executed = SM_TRUE;
+
         sm_Variable *All_p = sm_getVariable(&Runtime_p->VariableArray, "ALL");
         for (int j = 0; All_p && j < All_p->valueCount; ++j) {
             SM_CHECK(sm_addBuildOption(Runtime_p, All_p->values_pp[j]))
@@ -165,10 +188,11 @@ SM_BEGIN()
     Runtime_p->showParseTree = SM_TRUE;
     Runtime_p->GUI = SM_FALSE;
     Runtime_p->quiet = SM_FALSE;
-    Runtime_p->functionCallback_f = NULL;
+
+    Runtime_p->functionCallback_f      = NULL;
     Runtime_p->sourceContextCallback_f = NULL;
-    Runtime_p->beforeBuildCallback_f = NULL;
-    Runtime_p->afterBuildCallback_f = NULL;
+    Runtime_p->beforeBuildCallback_f   = NULL;
+    Runtime_p->afterBuildCallback_f    = NULL;
 
     sm_initFileArray(&Runtime_p->FileArray);
     sm_initParserArray(&Runtime_p->ParserArray);
@@ -183,6 +207,16 @@ SM_BEGIN()
     sm_updateVariable(&Runtime_p->VariableArray, "PROJ_DIR", &wrk_p, 1);
     sm_updateVariable(&Runtime_p->VariableArray, "LIB_DEST", &wrk_p, 1);
     sm_updateVariable(&Runtime_p->VariableArray, "BIN_DEST", &wrk_p, 1);
+
+    SM_BYTE *true_p = "true";
+
+#ifdef __APPLE__
+    sm_updateVariable(&Runtime_p->VariableArray, "MAC", &true_p, 1);
+#elif WIN32 
+    sm_updateVariable(&Runtime_p->VariableArray, "WINDOWS", &true_p, 1);
+#elif __linux__
+    sm_updateVariable(&Runtime_p->VariableArray, "LINUX", &true_p, 1);
+#endif
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
 }

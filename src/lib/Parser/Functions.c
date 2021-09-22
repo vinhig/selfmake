@@ -209,20 +209,47 @@ SM_BEGIN()
 SM_DIAGNOSTIC_END(result)
 }
 
-// EXECUTE FUNCTIONS ===============================================================================
-
-SM_RESULT sm_executeFunctions(
-    sm_Runtime *Runtime_p, sm_Parser *Parser_p)
+SM_BOOL sm_compareIf(
+    sm_Runtime *Runtime_p, sm_If *If_p, SM_BOOL b)
 {
 SM_BEGIN()
 
-    if (!Parser_p->executed) {
-        for (int d = 0; d < Parser_p->definitions; ++d) {
-            if (Parser_p->Definitions_p[d].type == SM_DEFINITION_FUNCTION) {
-                SM_CHECK(sm_executeFunction(Runtime_p, &Parser_p->Definitions_p[d].Function))
-            }
+    sm_Variable *Var_p = sm_getVariable(&Runtime_p->VariableArray, If_p->string_p);
+    if (Var_p && Var_p->valueCount > 0) {
+        if (!strcmp(*Var_p->values_pp, "true") && b == SM_TRUE) {SM_END(SM_TRUE)}
+        if (!strcmp(*Var_p->values_pp, "false") && b == SM_FALSE) {SM_END(SM_TRUE)}
+    }
+
+SM_END(SM_FALSE)
+}
+
+SM_RESULT sm_executeIf(
+    sm_Runtime *Runtime_p, sm_If *If_p) 
+{
+SM_BEGIN()
+
+    sm_Variable *Var_p = sm_getVariable(&Runtime_p->VariableArray, If_p->string_p);
+    if (Var_p && Var_p->valueCount > 0 && !strcmp(*Var_p->values_pp, "true")) {
+        SM_CHECK(sm_executeBlock(Runtime_p, &If_p->Block_p->Block))
+    }
+
+SM_DIAGNOSTIC_END(SM_SUCCESS)
+}
+
+// EXECUTE BLOCK ===================================================================================
+
+SM_RESULT sm_executeBlock(
+    sm_Runtime *Runtime_p, sm_Block *Block_p)
+{
+SM_BEGIN()
+
+    for (int d = 0; d < Block_p->definitions; ++d) {
+        switch (Block_p->Definitions_p[d].type) {
+            case SM_DEFINITION_FUNCTION :
+                SM_CHECK(sm_executeFunction(Runtime_p, &Block_p->Definitions_p[d].Function))
+            case SM_DEFINITION_IF :
+                SM_CHECK(sm_executeIf(Runtime_p, &Block_p->Definitions_p[d].If))
         }
-	Parser_p->executed = SM_TRUE;
     }
 
 SM_END(SM_SUCCESS)

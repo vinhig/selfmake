@@ -4,8 +4,8 @@ set(PROJ_DIR,"${WRK_DIR}")
 set(LIB_DEST,"${WRK_DIR}/lib/")
 set(BIN_DEST,"${WRK_DIR}/bin/")
 set(PROJ_STAGE,"design phase")
-set(LANG_VER,"0.0.0")
-set(LANG_DATE,"2021-05-01")
+set(LANG_VER,"0.1.0")
+set(LANG_DATE,"2021-09-22")
 
 // SOURCE ==========================================================================================
 
@@ -20,27 +20,27 @@ compile(selfmake,"-std=gnu99")
 
 source(
     selfmake
-    "Common/Result.c"
-    "Core/Runtime.c"
-    "Core/Utils.c"
-    "Core/Thread.c"
-    "Core/File.c"
-    "Core/Configure.c"
-    "Core/Build.c"
-    "Core/Options.c"
-    "Parser/Tokenizer.c"
-    "Parser/Parser.c"
-    "Parser/Variables.c"
-    "Parser/Sources.c"
-    "Parser/SourceContexts.c"
-    "Parser/Functions.c"
-    "Test/Channel.c"
-    "Test/Process.c"
-    "Test/Library.c"
-    "Test/Test.c"
-    "UI/Message.c"
+        "Common/Result.c"
+        "Core/Runtime.c"
+        "Core/Utils.c"
+        "Core/Thread.c"
+        "Core/File.c"
+        "Core/Configure.c"
+        "Core/Build.c"
+        "Core/Options.c"
+        "Parser/Tokenizer.c"
+        "Parser/Parser.c"
+        "Parser/Variables.c"
+        "Parser/Sources.c"
+        "Parser/SourceContexts.c"
+        "Parser/Functions.c"
+        "Test/Channel.c"
+        "Test/Process.c"
+        "Test/Library.c"
+        "Test/Test.c"
+        "UI/Message.c"
     smake
-    "Main.c"
+        "Main.c"
 )
 
 // DOCS ============================================================================================
