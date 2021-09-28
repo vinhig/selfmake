@@ -12,11 +12,18 @@ set(LANG_DATE,"2021-09-22")
 lib(selfmake,"${WRK_DIR}/src/lib/")
 bin(smake,"${WRK_DIR}/src/bin/smake")
 
-link(selfmake,"-lpthread -ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
-link(smake,"-Wl,-rpath=${WRK_DIR}/lib:usr/local/lib -L${WRK_DIR}/lib -lselfmake")
+MAC {
+    link(selfmake,"-shared -lpthread -ldl")
+    link(smake,"-Wl, -L${WRK_DIR}/lib -lselfmake")
+}
 
-compile(smake,"-std=gnu99")
-compile(selfmake,"-std=gnu99")
+LINUX {
+    link(selfmake,"-lpthread -ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11")
+    link(smake,"-Wl,-rpath=${WRK_DIR}/lib:usr/local/lib -L${WRK_DIR}/lib -lselfmake")
+}
+
+compile(smake,"-g -std=gnu11 -D_POSIX_C_SOURCE -D_C99_SOURCE")
+compile(selfmake,"-g -std=gnu11 -D_POSIX_C_SOURCE -D_C99_SOURCE")
 
 source(
     selfmake
@@ -110,3 +117,4 @@ set(
     "<p><b>2021-04-17</b><br>hello world!</p>"
 )
 
+ 

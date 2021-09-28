@@ -7,7 +7,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     LIBS=-ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "BUILDING selfmake"
-    CC="clang -D_POSIX_C_SOURCE -D_C99_SOURCE"
+    CC="clang -g -D_POSIX_C_SOURCE -D_C99_SOURCE"
     LIBS=""
 fi
 
@@ -46,7 +46,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     $DIR/build/smmake -b ALL 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    $CC -std=gnu11 -no-pie -Wl -o$DIR/build/smmake -L$DIR/lib/ -lselfmake \
+    $CC -std=gnu11 -Wl -o$DIR/build/smmake -L$DIR/lib/ -lselfmake \
     $DIR/src/bin/smmake/Main.c \
     $DIR/src/bin/smmake/Version.c \
     $DIR/src/bin/smmake/Documents.c \
