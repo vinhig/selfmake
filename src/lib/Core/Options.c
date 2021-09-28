@@ -29,7 +29,7 @@
 // HELPER ==========================================================================================
 
 static SM_BYTE *sm_offsetBuildArgumentPrefix(
-    sm_Runtime *Runtime_p, sm_Parser *Parser_p, SM_BYTE *name_p)
+    sm_Runtime *Runtime_p, SM_BYTE *name_p)
 {
 SM_BEGIN()
 
@@ -47,35 +47,60 @@ SM_BEGIN()
 SM_END(name_p)
 }
 
+// GET OPTION ======================================================================================
+
+static sm_Option *sm_getOptionFromBlock(
+    sm_Runtime *Runtime_p, sm_Block *Block_p, SM_BYTE *name_p, SM_BYTE **argv_pp, int args)
+{
+SM_BEGIN()
+
+    for (int d = 0; d < Block_p->definitions; ++d) 
+    {
+        switch (Block_p->Definitions_p[d].type)
+        {
+            case SM_DEFINITION_IF :
+                if (sm_compareIf(Runtime_p, &Block_p->Definitions_p[d].If, SM_TRUE)) {
+                    sm_Option *Option_p = sm_getOptionFromBlock(Runtime_p, &Block_p->Definitions_p[d].If.Block_p->Block, name_p, argv_pp, args);
+                    if (Option_p) {SM_END(Option_p)}
+                }
+                break;
+
+            case SM_DEFINITION_OPTION :
+                if (!strcmp(Block_p->Definitions_p[d].Option.name_p, name_p)
+                &&  Block_p->Definitions_p[d].Option.arguments == args) {
+                    SM_BOOL sameArguments = SM_TRUE;
+                    for (int i = 0; i < args; ++i) {
+                        SM_BYTE *argument_p = Block_p->Definitions_p[d].Option.arguments_pp[i];
+                        SM_BYTE *offsetArgument_p = argument_p;
+                        if (Block_p->Definitions_p[d].Option.name_p[0] == 'b' || Block_p->Definitions_p[d].Option.name_p[0] == 't') {
+                            offsetArgument_p = sm_offsetBuildArgumentPrefix(Runtime_p, argument_p);
+                        }
+                        if (strcmp(argument_p, argv_pp[i]) && strcmp(offsetArgument_p, argv_pp[i])) {
+                            sameArguments = SM_FALSE; 
+                            break;
+                        }
+                    }
+                    if (sameArguments) {
+                        SM_END(&Block_p->Definitions_p[d].Option)
+                    }
+                }
+                break;
+        }
+    }
+
+SM_END(NULL)
+}
+
 static sm_Option *sm_getOptionFromParser(
     sm_Runtime *Runtime_p, sm_Parser *Parser_p, SM_BYTE *name_p, SM_BYTE **argv_pp, int args)
 {
 SM_BEGIN()
 
-    for (int d = 0; d < Parser_p->definitions; ++d) {
-        if (Parser_p->Definitions_p[d].type == SM_DEFINITION_OPTION) {
-            if (!strcmp(Parser_p->Definitions_p[d].Option.name_p, name_p)
-            &&  Parser_p->Definitions_p[d].Option.arguments == args) {
-                SM_BOOL sameArguments = SM_TRUE;
-                for (int i = 0; i < args; ++i) {
-                    SM_BYTE *argument_p = Parser_p->Definitions_p[d].Option.arguments_pp[i];
-                    SM_BYTE *offsetArgument_p = argument_p;
-                    if (Parser_p->Definitions_p[d].Option.name_p[0] ==  'b' || Parser_p->Definitions_p[d].Option.name_p[0] == 't') {
-                        offsetArgument_p = sm_offsetBuildArgumentPrefix(Runtime_p, Parser_p, argument_p);
-                    }
-                    if (strcmp(argument_p, argv_pp[i]) && strcmp(offsetArgument_p, argv_pp[i])) {
-                        sameArguments = SM_FALSE; 
-                        break;
-                    }
-                }
-                if (sameArguments) {
-                    SM_END(&Parser_p->Definitions_p[d].Option)
-                }
-            }
-        }
-    }
+    sm_Block Block;
+    Block.definitions = Parser_p->definitions;
+    Block.Definitions_p = Parser_p->Definitions_p;
 
-SM_END(NULL)
+SM_END(sm_getOptionFromBlock(Runtime_p, &Block, name_p, argv_pp, args))
 }
 
 static sm_Option *sm_getShortOptions(
@@ -144,24 +169,53 @@ SM_BEGIN()
 SM_END(Option_p)
 }
 
+// OPTION NAME =====================================================================================
+
+static SM_BOOL sm_optionNameExistsInBlock(
+    sm_Runtime *Runtime_p, sm_Block *Block_p, SM_BYTE *name_p)
+{
+SM_BEGIN()
+
+    for (int d = 0; d < Block_p->definitions; ++d) {
+        switch (Block_p->Definitions_p[d].type) {
+            case SM_DEFINITION_OPTION :
+                if (!strcmp(Block_p->Definitions_p[d].Option.name_p, name_p)) {
+                    SM_END(SM_TRUE)
+                }
+                break;
+            case SM_DEFINITION_IF :
+                if (sm_compareIf(Runtime_p, &Block_p->Definitions_p[d].If, SM_TRUE)) {
+                    if (sm_optionNameExistsInBlock(Runtime_p, &Block_p->Definitions_p[d].If.Block_p->Block, name_p)) {
+                        SM_END(SM_TRUE)
+                    }
+                }
+                break;
+        }
+          
+    } 
+
+SM_END(SM_FALSE)
+}
+
 static SM_BOOL sm_optionNameExists(
     sm_Runtime *Runtime_p, SM_BYTE *name_p)
 {
 SM_BEGIN()
 
-    for (int j = 0; j < Runtime_p->ParserArray.length; ++j) {
-        sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[j];
-        for (int d = 0; d < Parser_p->definitions; ++d) {
-            if (Parser_p->Definitions_p[d].type == SM_DEFINITION_OPTION) {
-                if (!strcmp(Parser_p->Definitions_p[d].Option.name_p, name_p)) {
-                    SM_END(SM_TRUE)
-                }
-            }
+    for (int i = 0; i < Runtime_p->ParserArray.length; ++i) {
+        sm_Parser *Parser_p = &Runtime_p->ParserArray.Parsers_p[i];
+        sm_Block Block;
+        Block.definitions = Parser_p->definitions;
+        Block.Definitions_p = Parser_p->Definitions_p;
+        if (sm_optionNameExistsInBlock(Runtime_p, &Block, name_p)) {
+            SM_END(SM_TRUE)
         } 
     }
 
 SM_END(SM_FALSE)
 }
+
+// EXECUTE OPTION ==================================================================================
 
 static SM_RESULT sm_printOption(
     sm_Option *Option_p)
@@ -198,11 +252,7 @@ SM_BEGIN()
         else {SM_DIAGNOSTIC_END(SM_ERROR_BAD_STATE)}
     }
     else {
-        for (int d = 0; d < Option_p->Block_p->Block.definitions; ++d) {
-            if (Option_p->Block_p->Block.Definitions_p[d].type == SM_DEFINITION_FUNCTION) {
-                SM_CHECK(sm_executeFunction(Runtime_p, &Option_p->Block_p->Block.Definitions_p[d].Function))
-            }
-        }
+        SM_CHECK(sm_executeBlock(Runtime_p, &Option_p->Block_p->Block))
     }
 
 SM_DIAGNOSTIC_END(SM_SUCCESS)
@@ -227,7 +277,7 @@ SM_BEGIN()
             &&  !Definition_p->Option.longOption
             &&  !strcmp(Definition_p->Option.name_p, "b") 
             &&  Definition_p->Option.arguments == 1 
-            &&  (!strcmp(Definition_p->Option.arguments_pp[0], name_p) || !strcmp(sm_offsetBuildArgumentPrefix(Runtime_p, Parser_p, Definition_p->Option.arguments_pp[0]), name_p))) {
+            &&  (!strcmp(Definition_p->Option.arguments_pp[0], name_p) || !strcmp(sm_offsetBuildArgumentPrefix(Runtime_p, Definition_p->Option.arguments_pp[0]), name_p))) {
                 SM_END(SM_TRUE)
             }
         }

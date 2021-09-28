@@ -40,15 +40,23 @@
         sm_Definition *Block_p;
     } sm_Option;
 
+    typedef struct sm_If {
+        SM_DEFINITION type;
+        SM_BYTE *string_p;
+        sm_Definition *Block_p;
+    } sm_If;
+
     typedef union sm_Definition {
         SM_DEFINITION type;
         sm_Option Option;
         sm_Function Function;
         sm_Block Block;
+        sm_If If;
     } sm_Definition;
 
     typedef struct sm_Parser {
         SM_BOOL executed;
+        SM_BOOL expectExpression;
         unsigned int definitions;
         sm_Definition *Definitions_p;
     } sm_Parser;

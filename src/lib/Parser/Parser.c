@@ -82,8 +82,7 @@ SM_BEGIN()
     Definition_p->Block.Definitions_p = malloc(sizeof(sm_Definition));
     SM_CHECK_NULL(NULL, Definition_p->Block.Definitions_p)
 
-    while (Token_p->type != SM_TOKEN_CURLY_BRACKET_RIGHT)
-    {        
+    while (Token_p->type != SM_TOKEN_CURLY_BRACKET_RIGHT) {        
         Token_p = sm_parseToken(Token_p, &Definition_p->Block.Definitions_p[Definition_p->Block.definitions++]);
         Definition_p->Block.Definitions_p = realloc(Definition_p->Block.Definitions_p, sizeof(sm_Definition) * (Definition_p->Block.definitions + 1));
     }
@@ -150,6 +149,25 @@ SM_BEGIN()
 SM_END(sm_parseBlock(++Token_p, Definition_p->Option.Block_p))
 }
 
+static sm_Token *sm_parseIf(
+    sm_Token *Token_p, sm_Definition *Definition_p)
+{
+SM_BEGIN()
+
+    Definition_p->type = SM_DEFINITION_IF;
+    Definition_p->If.string_p = Token_p->string_p;
+    Definition_p->If.Block_p = malloc(sizeof(sm_Definition)); 
+    SM_CHECK_NULL(NULL, Definition_p->If.Block_p)
+
+    ++Token_p;
+
+    if (Token_p->type != SM_TOKEN_CURLY_BRACKET_LEFT) {
+        SM_END(Token_p)
+    }
+
+SM_END(sm_parseBlock(++Token_p, Definition_p->If.Block_p))
+}
+
 static sm_Token *sm_parseToken(
     sm_Token *Token_p, sm_Definition *Definition_p) 
 {
@@ -175,7 +193,13 @@ SM_BEGIN()
             break;
 
         case SM_TOKEN_IDENTIFIER :
-            SM_END(sm_parseFunction(Token_p, Definition_p))
+            switch((Token_p+1)->type) {
+                case SM_TOKEN_CURLY_BRACKET_LEFT :
+                    SM_END(sm_parseIf(Token_p, Definition_p))
+                case SM_TOKEN_ROUND_BRACKET_LEFT :
+                    SM_END(sm_parseFunction(Token_p, Definition_p))
+            }
+            break;
 
         case SM_TOKEN_HYPHEN_MINUS :
             SM_END(sm_parseOption(Token_p, Definition_p))
@@ -228,6 +252,15 @@ SM_BEGIN()
 
     switch (Definition_p->type)
     {
+        case SM_DEFINITION_IF :
+            sm_messagef("%s%s", depth_p, Definition_p->If.string_p);
+            sm_messagef("%s{", depth_p);
+            for (int j = 0; j < Definition_p->If.Block_p->Block.definitions; ++j) {
+                sm_showParserDefinition(&Definition_p->If.Block_p->Block.Definitions_p[j], depth + 1);
+            }
+            sm_messagef("%s}", depth_p);
+            break;
+
         case SM_DEFINITION_FUNCTION :
             sm_messagef("%s%s", depth_p, Definition_p->Function.name_p);
             for (int j = 0; j < Definition_p->Function.arguments; ++j) {
