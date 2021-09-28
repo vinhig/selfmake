@@ -44,6 +44,7 @@ SM_BEGIN()
 
     int size = 1024;
     SM_BYTE buffer_p[1024] = {0};
+
 #if defined(__linux__)
     if (readlink("/proc/self/exe", buffer_p, size) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, size) == -1
@@ -52,6 +53,7 @@ SM_BEGIN()
     size = 0;
     _NSGetExecutablePath(NULL, &size);
     _NSGetExecutablePath(buffer_p, &size);
+#endif
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
@@ -61,8 +63,6 @@ SM_BEGIN()
     procDir_p = malloc(strlen(buffer_p) + 1);
     SM_CHECK_NULL(NULL, procDir_p)
     sprintf(procDir_p, buffer_p);
-#endif
-
 
 SM_END(procDir_p)
 }
