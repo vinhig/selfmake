@@ -4,7 +4,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo -e "BUILDING \e[1;32mselfmake\e[0m"
     echo
     CC=gcc
-    LIBS=-ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
+    LIBS="-ldl -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "BUILDING selfmake"
     CC="clang -g -D_POSIX_C_SOURCE -D_C99_SOURCE"

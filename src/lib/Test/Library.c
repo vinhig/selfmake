@@ -64,7 +64,7 @@ SM_RESULT sm_getExeDir(
 #if defined(__linux__)
     if (readlink("/proc/self/exe", buffer_p, size) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, size) == -1
-    &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_END(NULL)}
+    &&  readlink("/proc/self/path/a.out", buffer_p, size) == -1) {SM_END(SM_ERROR_BAD_STATE)}
 #elif defined(__APPLE__)
     size = 0;
     _NSGetExecutablePath(NULL, &size);
