@@ -113,6 +113,7 @@ source(
 
 set(
     NEWS
+    "<p><b>2021-09-29</b><br>selfmake can now be compiled on mac, thanks to <a href:\"https://github.com/vinhig\">vinhig</a>. Also, the first iteration of conditionals was added."
     "<p><b>2021-04-27</b><br>Work on the language specification is now underway."
     "<p><b>2021-04-21</b><br>A lot of things have been reworked and some hacky stuff was purged, resulting in <a href=\"./impl/html/group__selfmakeChangelog.html#v0.1.0.0\">v0.1.0.0</a></p>"
     "<p><b>2021-04-17</b><br>hello world!</p>"

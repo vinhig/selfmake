@@ -92,6 +92,9 @@
     /**
      * The minor version is used for the addition of small functionalities.
      *
+     * 2021-09-29 | v0.3.1.0 <a id="v0.3.1.0"></a>
+     * - [Dajo Frey](https://github.com/dajofrey): Add macos port by vinhig. 
+     *
      * 2021-04-25 | v0.1.2.0 <a id="v0.1.2.0"></a>
      * - [Dajo Frey](https://github.com/dajofrey): Add sm_messagef() to API. 
      *
@@ -107,7 +110,7 @@
      * 2021-04-17 | v0.0.0.0
      * - [Dajo Frey](https://github.com/dajofrey): Initial version.
      */
-    #define SM_MINOR_VERSION 0
+    #define SM_MINOR_VERSION 1
 
     /**
      * The patch version is used for bugfixes or non-consequential changes.
